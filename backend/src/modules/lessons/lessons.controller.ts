@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { FindLessonsDto } from 'src/modules/lessons/dto/find-lesson.det';
 
 @Controller('lessons')
 export class LessonsController {
@@ -22,8 +24,8 @@ export class LessonsController {
   }
 
   @Get()
-  findAll() {
-    return this.lessonsService.findAll();
+  findAll(@Query() query: FindLessonsDto) {
+    return this.lessonsService.findAll(query);
   }
 
   @Get(':id')
