@@ -15,27 +15,27 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
   email: string;
 
-  @Column({ type: 'varchar', length: 255, select: false })
-  password: string;
+  @Column({ type: 'varchar', length: 255, select: false, nullable: false })
+  password_hash: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
+  updated_at: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    if (this.password) {
+    if (this.password_hash) {
       const saltRounds = 10;
-      this.password = await bcrypt.hash(this.password, saltRounds);
+      this.password_hash = await bcrypt.hash(this.password_hash, saltRounds);
     }
   }
 }
