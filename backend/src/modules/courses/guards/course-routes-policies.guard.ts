@@ -23,7 +23,7 @@ export class CourseRoutesPoliciesGuard implements CanActivate {
 
     const course = await this.coursesService.findOne(courseId);
 
-    if (course.creator_id.id !== user.id) {
+    if (course.creator_id !== user.id) {
       throw new ForbiddenException('Você não tem permissão para esta ação.');
     }
 
