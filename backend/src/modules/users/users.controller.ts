@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthTokenGuard } from 'src/modules/auth/guards/auth-token.guard';
+import { UserRoutesPoliciesGuard } from 'src/modules/users/guards/user-routes-policies.guard';
 
 @Controller('users')
 export class UsersController {
@@ -22,7 +23,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, UserRoutesPoliciesGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -31,7 +32,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, UserRoutesPoliciesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);

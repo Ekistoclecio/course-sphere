@@ -39,12 +39,14 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const emailExists = await this.userRepository.findOneBy({
-      email: updateUserDto.email,
-    });
+    if (updateUserDto.email) {
+      const emailExists = await this.userRepository.findOneBy({
+        email: updateUserDto.email,
+      });
 
-    if (emailExists && emailExists.id !== id) {
-      throw new ConflictException('E-mail já cadastrado!');
+      if (emailExists && emailExists.id !== id) {
+        throw new ConflictException('E-mail já cadastrado!');
+      }
     }
 
     let passwordHash: string | undefined;
