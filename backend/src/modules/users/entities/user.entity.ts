@@ -1,14 +1,10 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
@@ -29,13 +25,4 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password_hash) {
-      const saltRounds = 10;
-      this.password_hash = await bcrypt.hash(this.password_hash, saltRounds);
-    }
-  }
 }
