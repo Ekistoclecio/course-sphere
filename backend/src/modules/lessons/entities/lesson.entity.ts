@@ -38,6 +38,9 @@ export class Lesson {
   @Column({ type: 'text', nullable: false })
   video_url: string;
 
+  @Column({ type: 'int', nullable: false })
+  course_id: number;
+
   @ManyToOne(() => Course, {
     eager: true,
     nullable: false,
@@ -45,7 +48,10 @@ export class Lesson {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'course_id' })
-  course_id: number;
+  course: Course;
+
+  @Column({ type: 'int', nullable: false })
+  creator_id: number;
 
   @ManyToOne(() => User, {
     eager: true,
@@ -54,7 +60,7 @@ export class Lesson {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'creator_id' })
-  creator_id: number;
+  creator: User;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
