@@ -4,7 +4,7 @@ import {
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
-import { CoursesService } from '../courses.service'; // ajuste o path
+import { CoursesService } from '../courses.service';
 import { Request } from 'express';
 import { UserPayload } from 'src/modules/auth/guards/auth-token.guard';
 
