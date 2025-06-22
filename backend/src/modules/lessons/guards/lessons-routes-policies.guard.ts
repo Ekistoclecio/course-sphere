@@ -85,7 +85,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
 
     if (!isLessonCreator && !isCourseCreator) {
       throw new ForbiddenException(
-        'Você não tem permissão para atualizar ou remover lições neste curso.',
+        'Você não tem permissão para realizar essa ação.',
       );
     }
 
