@@ -19,8 +19,9 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    const user = await this.userRepository.findOneBy({
-      email: loginDto.email,
+    const user = await this.userRepository.findOne({
+      where: { email: loginDto.email },
+      select: ['id', 'email', 'password_hash', 'name'],
     });
 
     if (user) {
