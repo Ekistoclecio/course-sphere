@@ -25,8 +25,12 @@ export class LessonsService {
     return this.lessonRepository.save(lesson);
   }
 
-  async findAll(query: FindLessonsDto, current_user: UserPayload) {
-    const { search, status, course_id, limit = 10, offset = 0 } = query;
+  async findAll(
+    course_id: number,
+    query: FindLessonsDto,
+    current_user: UserPayload,
+  ) {
+    const { search, status, limit = 10, offset = 0 } = query;
     const course = await this.courseService.findOne(course_id, current_user);
 
     if (!course) {

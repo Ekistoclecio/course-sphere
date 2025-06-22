@@ -34,10 +34,14 @@ export class LessonsController {
     return this.lessonsService.create(createLessonDto, current_user);
   }
 
-  @Get()
-  findAll(@Query() query: FindLessonsDto, @Req() req: Request) {
+  @Get(':course_id')
+  findAll(
+    @Param('course_id', ParseIntPipe) course_id: number,
+    @Query() query: FindLessonsDto,
+    @Req() req: Request,
+  ) {
     const current_user = req['current_user'] as UserPayload;
-    return this.lessonsService.findAll(query, current_user);
+    return this.lessonsService.findAll(course_id, query, current_user);
   }
 
   @UseGuards(LessonRoutesPoliciesGuard)
