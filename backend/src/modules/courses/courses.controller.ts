@@ -16,6 +16,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
 import { AuthTokenGuard } from 'src/modules/auth/guards/auth-token.guard';
+import { CourseRoutesPoliciesGuard } from 'src/modules/courses/guards/course-routes-policies.guard';
 
 @UseGuards(AuthTokenGuard)
 @Controller('courses')
@@ -27,6 +28,7 @@ export class CoursesController {
     return this.coursesService.create(createCourseDto);
   }
 
+  @UseGuards(CourseRoutesPoliciesGuard)
   @Patch(':id/instructors')
   addInstructors(
     @Param('id', ParseIntPipe) id: number,
@@ -35,6 +37,7 @@ export class CoursesController {
     return this.coursesService.addInstructors(id, body);
   }
 
+  @UseGuards(CourseRoutesPoliciesGuard)
   @Patch(':id/instructors/remove')
   removeInstructors(
     @Param('id', ParseIntPipe) id: number,
@@ -53,6 +56,7 @@ export class CoursesController {
     return this.coursesService.findOne(id);
   }
 
+  @UseGuards(CourseRoutesPoliciesGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -61,6 +65,7 @@ export class CoursesController {
     return this.coursesService.update(id, updateCourseDto);
   }
 
+  @UseGuards(CourseRoutesPoliciesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.coursesService.remove(id);
