@@ -8,13 +8,16 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
+import { AuthTokenGuard } from 'src/modules/auth/guards/auth-token.guard';
 
+@UseGuards(AuthTokenGuard)
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
