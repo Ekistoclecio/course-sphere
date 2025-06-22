@@ -6,5 +6,5 @@ import { Match } from 'src/common/decorators/match.decorator';
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ValidateIf((values: UpdateUserDto) => values.password !== undefined)
   @Match('password', { message: 'As senhas não coincidem.' })
-  confirmPassword: string;
+  confirm_password: string;
 }
