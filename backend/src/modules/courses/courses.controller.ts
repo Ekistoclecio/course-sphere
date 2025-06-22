@@ -13,6 +13,7 @@ import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
 
 @Controller('courses')
 export class CoursesController {
@@ -21,6 +22,22 @@ export class CoursesController {
   @Post()
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
+  }
+
+  @Patch(':id/instructors')
+  addInstructors(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateInstructorsDto,
+  ) {
+    return this.coursesService.addInstructors(id, body);
+  }
+
+  @Patch(':id/instructors/remove')
+  removeInstructors(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateInstructorsDto,
+  ) {
+    return this.coursesService.removeInstructors(id, body);
   }
 
   @Get()
