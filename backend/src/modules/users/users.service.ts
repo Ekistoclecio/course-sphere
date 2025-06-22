@@ -8,11 +8,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { HashingService } from 'src/modules/auth/hashing/hashing.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly hashingService: HashingService,
   ) {}
   async create(createUserDto: CreateUserDto) {
     const emailExists = await this.userRepository.findOneBy({
@@ -23,19 +25,17 @@ export class UsersService {
       throw new ConflictException('E-mail já cadastrado!');
     }
 
-    const user = this.userRepository.create(createUserDto);
+    const passwordHash = await this.hashingService.hash(createUserDto.password);
+
+    const newUser = {
+      name: createUserDto.name,
+      email: createUserDto.email,
+      password_hash: passwordHash,
+    };
+
+    const user = this.userRepository.create(newUser);
     const createdUser = await this.userRepository.save(user);
     return createdUser;
-  }
-
-  async findOne(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
-
-    if (!user) {
-      throw new NotFoundException('Usuário não encontrado.');
-    }
-
-    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -47,9 +47,19 @@ export class UsersService {
       throw new ConflictException('E-mail já cadastrado!');
     }
 
+    let passwordHash: string | undefined;
+    if (updateUserDto.password) {
+      passwordHash = await this.hashingService.hash(updateUserDto.password);
+    }
+
+    const newUserData = {
+      ...updateUserDto,
+      ...(passwordHash && { password_hash: passwordHash }),
+    };
+
     const user = await this.userRepository.preload({
       id,
-      ...updateUserDto,
+      ...newUserData,
     });
 
     if (!user) {
