@@ -7,6 +7,7 @@ import { AppDataSource } from 'src/config/db/data-source';
 import { CoursesModule } from 'src/modules/courses/courses.module';
 import { LessonsModule } from 'src/modules/lessons/lessons.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from 'src/modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     CoursesModule,
     LessonsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
