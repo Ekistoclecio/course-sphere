@@ -28,6 +28,9 @@ export class Course {
   @Column({ type: 'timestamp', nullable: false })
   end_date: Date;
 
+  @Column({ type: 'int', nullable: false })
+  creator_id: number;
+
   @ManyToOne(() => User, {
     eager: true,
     nullable: false,
@@ -35,7 +38,7 @@ export class Course {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'creator_id' })
-  creator_id: User;
+  creator: User;
 
   @ManyToMany(() => User)
   @JoinTable({
