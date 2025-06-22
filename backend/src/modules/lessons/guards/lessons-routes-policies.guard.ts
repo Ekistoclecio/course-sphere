@@ -11,7 +11,7 @@ import { Request } from 'express';
 import { CreateLessonDto } from 'src/modules/lessons/dto/create-lesson.dto';
 
 @Injectable()
-export class LessonPoliciesGuard implements CanActivate {
+export class LessonRoutesPoliciesGuard implements CanActivate {
   constructor(
     private readonly lessonsService: LessonsService,
     private readonly coursesService: CoursesService,
