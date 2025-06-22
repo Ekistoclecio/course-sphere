@@ -25,6 +25,14 @@ export class CreateUserDto {
   @MaxLength(60, { message: 'A senha deve ter no máximo 60 caracteres.' })
   password: string;
 
+  @IsString({ message: 'A confirmação de senha deve ser um texto.' })
+  @IsNotEmpty({ message: 'A confirmação de senha é obrigatória.' })
+  @MinLength(6, {
+    message: 'A confirmação de senha deve ter pelo menos 6 caracteres.',
+  })
+  @MaxLength(60, {
+    message: 'A confirmação de senha deve ter no máximo 60 caracteres.',
+  })
   @Match('password', {
     message: 'As senhas não coincidem.',
   })
