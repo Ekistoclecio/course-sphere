@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IsAfterDate } from 'src/common/decorators/is-after-date.decorator';
 
 export class CreateCourseDto {
   @IsString({ message: 'O nome deve ser um texto.' })
@@ -25,5 +26,8 @@ export class CreateCourseDto {
 
   @IsDateString({}, { message: 'A data de término deve ser uma data válida.' })
   @IsNotEmpty({ message: 'A data de término é obrigatória.' })
+  @IsAfterDate('start_date', {
+    message: 'A data de término deve ser posterior à data de início.',
+  })
   end_date: Date;
 }
