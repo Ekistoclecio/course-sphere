@@ -11,6 +11,7 @@ import { In, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
 import { User } from 'src/modules/users/entities/user.entity';
+import { UserPayload } from 'src/modules/auth/guards/auth-token.guard';
 
 @Injectable()
 export class CoursesService {
@@ -20,8 +21,12 @@ export class CoursesService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  create(createCourseDto: CreateCourseDto) {
-    const course = this.courseRepository.create(createCourseDto);
+  create(createCourseDto: CreateCourseDto, current_user: UserPayload) {
+    const newCourse = {
+      ...createCourseDto,
+      creator_id: current_user.id,
+    };
+    const course = this.courseRepository.create(newCourse);
     return this.courseRepository.save(course);
   }
 
@@ -77,21 +82,33 @@ export class CoursesService {
     return this.courseRepository.save(course);
   }
 
-  findAll(pagination: PaginationDto) {
+  findAll(pagination: PaginationDto, current_user: UserPayload) {
     const { limit = 10, offset = 0 } = pagination;
-    return this.courseRepository.find({
-      take: limit,
-      skip: offset,
-      order: {
-        updated_at: 'DESC',
-      },
-    });
+    return this.courseRepository
+      .createQueryBuilder('course')
+      .leftJoin('course.instructors', 'instructor')
+      .where('course.creator_id = :userId OR instructor.id = :userId', {
+        userId: current_user.id,
+      })
+      .orderBy('course.updated_at', 'DESC')
+      .take(limit)
+      .skip(offset)
+      .getMany();
   }
 
-  async findOne(id: number) {
-    const course = await this.courseRepository.findOneBy({ id });
+  async findOne(id: number, current_user: UserPayload) {
+    const course = await this.courseRepository.findOne({
+      where: { id },
+      relations: ['instructors'],
+    });
 
-    if (!course) {
+    if (
+      !course ||
+      (course.creator_id !== current_user.id &&
+        !course.instructors.some(
+          (instructor) => instructor.id === current_user.id,
+        ))
+    ) {
       throw new NotFoundException('Curso não encontrado.');
     }
 

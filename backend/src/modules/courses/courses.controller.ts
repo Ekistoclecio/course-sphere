@@ -9,14 +9,19 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
-import { AuthTokenGuard } from 'src/modules/auth/guards/auth-token.guard';
+import {
+  AuthTokenGuard,
+  UserPayload,
+} from 'src/modules/auth/guards/auth-token.guard';
 import { CourseRoutesPoliciesGuard } from 'src/modules/courses/guards/course-routes-policies.guard';
+import { Request } from 'express';
 
 @UseGuards(AuthTokenGuard)
 @Controller('courses')
@@ -24,8 +29,9 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.coursesService.create(createCourseDto);
+  create(@Body() createCourseDto: CreateCourseDto, @Req() req: Request) {
+    const current_user = req['current_user'] as UserPayload;
+    return this.coursesService.create(createCourseDto, current_user);
   }
 
   @UseGuards(CourseRoutesPoliciesGuard)
@@ -47,13 +53,15 @@ export class CoursesController {
   }
 
   @Get()
-  findAll(@Query() pagination: PaginationDto) {
-    return this.coursesService.findAll(pagination);
+  findAll(@Query() pagination: PaginationDto, @Req() request: Request) {
+    const current_user = request['current_user'] as UserPayload;
+    return this.coursesService.findAll(pagination, current_user);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.coursesService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() request: Request) {
+    const current_user = request['current_user'] as UserPayload;
+    return this.coursesService.findOne(id, current_user);
   }
 
   @UseGuards(CourseRoutesPoliciesGuard)
