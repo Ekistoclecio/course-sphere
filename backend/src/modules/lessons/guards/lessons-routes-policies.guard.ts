@@ -49,7 +49,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
     const isInstructor = course.instructors.some(
       (instructor) => instructor.id === user.id,
     );
-    const isCourseCreator = course.creator_id.id === user.id;
+    const isCourseCreator = course.creator_id === user.id;
 
     if (!isInstructor && !isCourseCreator) {
       throw new ForbiddenException(
@@ -81,7 +81,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
     }
 
     const isLessonCreator = lesson.creator_id === user.id;
-    const isCourseCreator = course.creator_id.id === user.id;
+    const isCourseCreator = course.creator_id === user.id;
 
     if (!isLessonCreator && !isCourseCreator) {
       throw new ForbiddenException(
