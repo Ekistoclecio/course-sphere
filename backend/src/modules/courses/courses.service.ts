@@ -4,6 +4,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from 'src/modules/courses/entities/course.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class CoursesService {
@@ -17,8 +18,15 @@ export class CoursesService {
     return this.courseRepository.save(course);
   }
 
-  findAll() {
-    return this.courseRepository.find();
+  findAll(pagination: PaginationDto) {
+    const { limit = 10, offset = 0 } = pagination;
+    return this.courseRepository.find({
+      take: limit,
+      skip: offset,
+      order: {
+        updated_at: 'DESC',
+      },
+    });
   }
 
   async findOne(id: number) {
