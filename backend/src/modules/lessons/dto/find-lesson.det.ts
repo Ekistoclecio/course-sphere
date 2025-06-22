@@ -14,8 +14,7 @@ export class FindLessonsDto extends PaginationDto {
   })
   status?: LessonStatus;
 
-  @IsOptional()
   @IsPositive({ message: 'O course_id deve ser um número inteiro positivo.' })
   @Type(() => Number)
-  course_id?: number;
+  course_id: number;
 }

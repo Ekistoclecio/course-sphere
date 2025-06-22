@@ -39,7 +39,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
   ): Promise<boolean> {
     const { course_id } = request.body as CreateLessonDto;
 
-    const course = await this.coursesService.findOne(course_id);
+    const course = await this.coursesService.findOne(course_id, user);
     if (!course) {
       throw new ForbiddenException(
         'Você não tem autorização para realizar esta ação.',
@@ -73,7 +73,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
       );
     }
 
-    const course = await this.coursesService.findOne(lesson.course_id);
+    const course = await this.coursesService.findOne(lesson.course_id, user);
     if (!course) {
       throw new ForbiddenException(
         'Curso não encontrado ou você não tem permissão para acessar este curso.',
