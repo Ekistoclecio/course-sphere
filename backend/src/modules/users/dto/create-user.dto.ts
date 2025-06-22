@@ -28,5 +28,5 @@ export class CreateUserDto {
   @Match('password', {
     message: 'As senhas não coincidem.',
   })
-  confirmPassword: string;
+  confirm_password: string;
 }
