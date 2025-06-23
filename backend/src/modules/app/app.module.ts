@@ -8,10 +8,12 @@ import { CoursesModule } from 'src/modules/courses/courses.module';
 import { LessonsModule } from 'src/modules/lessons/lessons.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from 'src/modules/auth/auth.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSource.options),
     UsersModule,
     CoursesModule,
