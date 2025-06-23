@@ -3,6 +3,7 @@ import { theme } from '@/theme';
 export const globalStyles = {
   html: {
     scrollBehavior: 'smooth',
+    fontSize: '62.5%',
   },
   body: {
     backgroundColor: theme.palette.background!.default,
