@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { signOut } from 'next-auth/react';
 
 class ApiService {
   private api: AxiosInstance;
@@ -8,6 +9,16 @@ class ApiService {
       baseURL: `http://localhost:3001/${entity}`,
       timeout: 10000,
     });
+
+    this.api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && error.response.status === 401) {
+          signOut();
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
