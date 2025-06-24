@@ -30,13 +30,12 @@ const nextAuthOptions: NextAuthOptions = {
 
         if (loginToken) {
           const decodedLoginToken = jwtDecode<LoginTokenDecoded>(loginToken);
-          const user: User = {
+          return {
             id: decodedLoginToken.id,
             email: decodedLoginToken.email,
             name: decodedLoginToken.name,
+            accessToken: loginToken,
           };
-
-          return user;
         }
 
         return null;
@@ -50,12 +49,18 @@ const nextAuthOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.user = user;
+        token.user = {
+          id: Number(user.id),
+          email: user.email,
+          name: user.name,
+        };
+        token.accessToken = (user as User & { accessToken: string }).accessToken;
       }
       return token;
     },
     async session({ session, token }) {
       session.user = token.user as User;
+      session.accessToken = token.accessToken as string;
       return session;
     },
   },

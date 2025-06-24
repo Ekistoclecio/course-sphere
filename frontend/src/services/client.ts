@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { signOut } from 'next-auth/react';
+import { getSession, signOut } from 'next-auth/react';
 
 export interface ApiErrorResponse {
   message: string | string[];
@@ -14,6 +14,17 @@ class ApiService {
     this.api = axios.create({
       baseURL: `http://localhost:3001/${entity}`,
       timeout: 10000,
+    });
+
+    this.api.interceptors.request.use(async (config) => {
+      const session = await getSession();
+      const token = session?.accessToken;
+
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
     });
 
     this.api.interceptors.response.use(
