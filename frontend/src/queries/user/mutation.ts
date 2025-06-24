@@ -1,4 +1,5 @@
 import { useMutation } from '@/queries/adapters';
+import { EditProfileData } from '@/schemas/user/profileEdit';
 import { userService } from '@/services/user';
 
 export const useCreateUser = () => {
@@ -6,7 +7,9 @@ export const useCreateUser = () => {
 };
 
 export const useUpdateUser = () => {
-  return useMutation(userService.update);
+  return useMutation(({ id, user }: { id: number; user: Partial<EditProfileData> }) =>
+    userService.update(user, id)
+  );
 };
 
 export const useDeleteUser = () => {
