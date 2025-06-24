@@ -33,10 +33,16 @@ export const Content = styled(Paper)(({ theme }) => ({
 }));
 
 export const Header = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
 
 export const Footer = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   textAlign: 'center',
 }));
