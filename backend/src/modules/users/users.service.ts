@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -39,6 +40,24 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'password_hash', 'email', 'name'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    const isCurrentPasswordValid = await this.hashingService.compare(
+      updateUserDto.current_password,
+      user.password_hash,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new UnauthorizedException('Senha atual inválida.');
+    }
+
     if (updateUserDto.email) {
       const emailExists = await this.userRepository.findOneBy({
         email: updateUserDto.email,
@@ -55,20 +74,21 @@ export class UsersService {
     }
 
     const newUserData = {
-      ...updateUserDto,
+      ...(updateUserDto.name && { name: updateUserDto.name }),
+      ...(updateUserDto.email && { email: updateUserDto.email }),
       ...(passwordHash && { password_hash: passwordHash }),
     };
 
-    const user = await this.userRepository.preload({
+    const updatedUser = await this.userRepository.preload({
       id,
       ...newUserData,
     });
 
-    if (!user) {
+    if (!updatedUser) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 
-    return this.userRepository.save(user);
+    return this.userRepository.save(updatedUser);
   }
 
   async remove(id: number) {
