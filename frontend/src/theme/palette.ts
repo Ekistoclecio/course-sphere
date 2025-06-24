@@ -38,9 +38,9 @@ export const palette: Partial<Palette> = {
     contrastText: '#FFFFFF',
   },
   text: {
-    primary: '#E0E6ED',
-    secondary: '#B0BACB',
-    disabled: '#7A8AA3',
+    primary: '#1A2B52',
+    secondary: '#5A6782',
+    disabled: '#B0BACB',
   },
   action: {
     active: '#D9E2F1',
@@ -57,6 +57,6 @@ export const palette: Partial<Palette> = {
   },
   background: {
     default: '#0A1A33',
-    paper: '#112144',
+    paper: '#F3F6FA',
   },
 };
