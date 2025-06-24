@@ -21,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={roboto.variable}>
-      <AppProviders>
-        <body>{children}</body>
-      </AppProviders>
+      <body>
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

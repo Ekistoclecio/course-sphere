@@ -1,5 +1,6 @@
 'use client';
 
+import { ConfiguredSnackbarProvider } from '@/providers/snackbar';
 import { theme } from '@/theme';
 import { globalStyles } from '@/theme/globalStyles';
 import { CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material';
@@ -12,7 +13,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <CssBaseline />
       <GlobalStyles styles={globalStyles} />
       <ThemeProvider theme={theme}>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <ConfiguredSnackbarProvider>{children}</ConfiguredSnackbarProvider>
+        </SessionProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );
