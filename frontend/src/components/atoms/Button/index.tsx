@@ -7,16 +7,18 @@ import * as S from './styles';
 
 export interface ButtonProps extends MuiButtonProps {
   loading?: boolean;
+  width?: string | number;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, loading = false, disabled, className, ...props }, ref) => {
+  ({ children, loading = false, disabled, className, width, ...props }, ref) => {
     return (
       <S.Root
         ref={ref}
         disabled={loading || disabled}
         className={clsx(className, { loading })}
         loading={loading}
+        width={width}
         {...props}
       >
         <S.Content isLoading={loading}>{children}</S.Content>
