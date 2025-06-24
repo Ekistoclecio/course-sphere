@@ -12,8 +12,8 @@ class UserService extends ApiService {
     return data;
   };
 
-  update = async (user: Partial<SignUpData>) => {
-    const { data } = await this.patch<User>('', { ...user });
+  update = async (user: Partial<SignUpData>, id: number) => {
+    const { data } = await this.patch<User>(`${id}`, { ...user });
     return data;
   };
 

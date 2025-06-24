@@ -1,3 +1,4 @@
+import { EditProfileData, profileUpdateBaseSchema } from '@/schemas/user/profileEdit';
 import { signUpBaseSchema, SignUpData } from '@/schemas/user/signup';
 import { userSchema, User } from '@/schemas/user/user';
 import { userService } from '@/services/user';
@@ -11,9 +12,9 @@ export class UserModel {
     return createdUser;
   }
 
-  static async update(user: Partial<SignUpData>): Promise<User> {
-    zodValidate(user, signUpBaseSchema.partial());
-    const updatedUser = await userService.update(user);
+  static async update(user: EditProfileData, id: number): Promise<User> {
+    zodValidate(user, profileUpdateBaseSchema.partial());
+    const updatedUser = await userService.update(user, id);
     zodValidate(updatedUser, userSchema);
     return updatedUser;
   }
