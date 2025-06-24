@@ -1,5 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { signOut } from 'next-auth/react';
+
+export interface ApiErrorResponse {
+  message: string | string[];
+  error: string;
+  statusCode: number;
+}
 
 class ApiService {
   private api: AxiosInstance;
@@ -21,28 +27,35 @@ class ApiService {
     );
   }
 
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public get = async <T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     return await this.api.get<T>(url, config);
-  }
+  };
 
-  public async post<T>(
+  public post = async <T>(
     url: string,
     data: object,
     config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<T>> {
+  ): Promise<AxiosResponse<T>> => {
     return await this.api.post<T>(url, data, config);
-  }
+  };
 
-  public async patch<T>(
+  public patch = async <T>(
     url: string,
     data: object,
     config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<T>> {
+  ): Promise<AxiosResponse<T>> => {
     return await this.api.patch<T>(url, data, config);
-  }
+  };
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public delete = async <T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<T>> => {
     return await this.api.delete<T>(url, config);
+  };
+
+  public static isApiError(error: unknown): error is AxiosError<ApiErrorResponse> {
+    return axios.isAxiosError(error) && !!error.response?.data?.statusCode;
   }
 }
 

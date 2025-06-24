@@ -7,20 +7,20 @@ class UserService extends ApiService {
     super('users/');
   }
 
-  async create(user: SignUpData) {
-    const { data } = await super.post<User>('', { ...user });
+  create = async (user: SignUpData) => {
+    const { data } = await this.post<User>('', { ...user });
     return data;
-  }
+  };
 
-  async update(user: Partial<SignUpData>) {
-    const { data } = await super.patch<User>('', { ...user });
+  update = async (user: Partial<SignUpData>) => {
+    const { data } = await this.patch<User>('', { ...user });
     return data;
-  }
+  };
 
-  async remove(userID: number) {
-    await super.delete<void>(`${userID}`);
+  remove = async (userID: number) => {
+    await this.delete<void>(`${userID}`);
     return;
-  }
+  };
 }
 
 export const userService = new UserService();
