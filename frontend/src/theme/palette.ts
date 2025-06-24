@@ -43,8 +43,8 @@ export const palette: Partial<Palette> = {
     disabled: '#B0BACB',
   },
   action: {
-    active: '#D9E2F1',
-    hover: '#10254B',
+    active: '#C4D1E6',
+    hover: '#D9E2F1',
     hoverOpacity: 0.08,
     selected: '#1A2B52',
     selectedOpacity: 0.16,
@@ -58,5 +58,6 @@ export const palette: Partial<Palette> = {
   background: {
     default: '#0A1A33',
     paper: '#F3F6FA',
+    header: '#1B2A52',
   },
 };
