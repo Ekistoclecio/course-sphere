@@ -17,17 +17,17 @@ export const globalStyles = {
     height: '8px',
   },
   '::-webkit-scrollbar-track': {
-    background: theme.palette.background!.paper,
+    background: 'transparent',
   },
   '::-webkit-scrollbar-thumb': {
     backgroundColor: `${theme.palette.primary!.main}aa`,
     borderRadius: '8px',
-    border: `2px solid ${theme.palette.background!.paper}`,
+    border: `2px solid transparent`,
   },
   '::-webkit-scrollbar-thumb:hover': {
     backgroundColor: theme.palette.primary!.main,
   },
   '::-webkit-scrollbar-corner': {
-    background: theme.palette.background!.paper,
+    background: 'transparent',
   },
 };
