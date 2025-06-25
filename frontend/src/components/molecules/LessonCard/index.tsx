@@ -6,15 +6,11 @@ import { Button } from '@/components/atoms/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { LessonStatus } from '@/services/interfaces';
 import { statusOptions } from '@/components/templates/Courses';
-import { useDeleteLesson } from '@/queries/lesson/mutation';
-import { useErrorHandler } from '@/hooks/useErrorHandler';
-import { useSnackbar } from 'notistack';
 import { PopupMenu } from '@/components/organisms/PopupMenu';
-import { useState } from 'react';
 import { Delete, Edit } from '@mui/icons-material';
 import { ConfirmationModal } from '@/components/organisms/ConfirmationModal';
-import { invalidateLessonsCache } from '@/queries/lesson/invalidation';
 import { EditLessonModal } from '@/components/organisms/EditLessonModal';
+import { useLessonCard } from '@/components/molecules/LessonCard/useLessonCard';
 
 export type LessonCardProps = {
   lesson: Lesson;
@@ -22,6 +18,7 @@ export type LessonCardProps = {
   onSelectLessonCallback: (lesson: Lesson) => void;
   onEditLessonCallback: (lesson: Lesson) => void;
   onDeleteLessonCallback: (lesson: Lesson) => void;
+  canManage: boolean;
 };
 
 const statusColors: Record<LessonStatus, 'success' | 'warning' | 'error' | 'info'> = {
@@ -33,27 +30,21 @@ const statusColors: Record<LessonStatus, 'success' | 'warning' | 'error' | 'info
 export const LessonCard = ({
   lesson,
   selectedLesson,
+  canManage,
   onSelectLessonCallback,
   onEditLessonCallback,
   onDeleteLessonCallback,
 }: LessonCardProps) => {
-  const { mutateAsync: deleteLesson } = useDeleteLesson();
-  const { enqueueSnackbar } = useSnackbar();
-  const { errorHandler } = useErrorHandler();
-
-  const [isEditLessonOpen, setIsEditLessonOpen] = useState(false);
-  const [isDeleteLessonOpen, setIsDeleteLessonOpen] = useState(false);
-
-  const handleDeleteLesson = async () => {
-    try {
-      await deleteLesson(lesson.id);
-      enqueueSnackbar('Aula deletada com sucesso', { variant: 'success' });
-      invalidateLessonsCache();
-      onDeleteLessonCallback(lesson);
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
+  const {
+    isDeleteLessonOpen,
+    isEditLessonOpen,
+    handleDeleteLesson,
+    setIsDeleteLessonOpen,
+    setIsEditLessonOpen,
+  } = useLessonCard({
+    lesson,
+    onDeleteLessonCallback,
+  });
 
   return (
     <S.LessonCard
@@ -88,26 +79,28 @@ export const LessonCard = ({
         </Box>
       </S.LessonInfo>
       <Box onClick={(event) => event.stopPropagation()}>
-        <PopupMenu
-          trigger={
-            <Button variant="text" color="inherit" size="small">
-              <SettingsIcon fontSize="large" sx={{ color: 'text.disabled' }} />
-            </Button>
-          }
-        >
-          <PopupMenu.Item
-            icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
-            onClick={() => setIsEditLessonOpen(true)}
+        {canManage && (
+          <PopupMenu
+            trigger={
+              <Button variant="text" color="inherit" size="small">
+                <SettingsIcon fontSize="large" sx={{ color: 'text.disabled' }} />
+              </Button>
+            }
           >
-            Editar
-          </PopupMenu.Item>
-          <PopupMenu.Item
-            icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
-            onClick={() => setIsDeleteLessonOpen(true)}
-          >
-            Excluir
-          </PopupMenu.Item>
-        </PopupMenu>
+            <PopupMenu.Item
+              icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
+              onClick={() => setIsEditLessonOpen(true)}
+            >
+              Editar
+            </PopupMenu.Item>
+            <PopupMenu.Item
+              icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
+              onClick={() => setIsDeleteLessonOpen(true)}
+            >
+              Excluir
+            </PopupMenu.Item>
+          </PopupMenu>
+        )}
       </Box>
 
       <ConfirmationModal
