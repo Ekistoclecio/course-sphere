@@ -1,11 +1,13 @@
 import { styled } from '@mui/material/styles';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
-export const Root = styled(Dialog)(({ theme }) => ({
+export const Root = styled(Dialog, {
+  shouldForwardProp: (prop) => prop !== 'customWidth',
+})<{ customWidth?: string | number }>(({ theme, customWidth }) => ({
   '& .MuiPaper-root': {
-    width: '400px',
+    width: customWidth ?? '400px',
     maxWidth: '100%',
-    margin: theme.spacing(1, 1, 1, 1),
+    margin: theme.spacing(1),
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,
     [theme.breakpoints.up('sm')]: {

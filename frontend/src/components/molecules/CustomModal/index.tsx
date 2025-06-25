@@ -6,6 +6,7 @@ import * as S from './styles';
 
 type CustomModalProps = DialogProps & {
   children: React.ReactNode;
+  width?: string | number;
 };
 
 type SubComponentProps = {
@@ -24,9 +25,9 @@ type CustomModalComposition = {
   Footer: React.FC<FooterProps>;
 } & React.FC<CustomModalProps>;
 
-export const CustomModal: CustomModalComposition = ({ children, ...props }) => {
+export const CustomModal: CustomModalComposition = ({ children, width, ...props }) => {
   return (
-    <S.Root {...props} fullWidth maxWidth="sm">
+    <S.Root {...props} customWidth={width} fullWidth maxWidth="sm">
       {children}
     </S.Root>
   );
