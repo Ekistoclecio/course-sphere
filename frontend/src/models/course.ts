@@ -3,7 +3,7 @@ import { zodValidate } from '@/utils/zod/validate';
 import { Course, courseSchema } from '@/schemas/course/course';
 import { CreateCourseData, createCourseBaseSchema } from '@/schemas/course/createCourse';
 import { UpdateCourseData, updateCourseBaseSchema } from '@/schemas/course/updateCourse';
-import { PaginationRequest } from '@/services/interfaces';
+import { PaginationRequest, PaginationResponse } from '@/services/interfaces';
 
 export class CourseModel {
   static async create(course: CreateCourseData): Promise<Course> {
@@ -24,10 +24,21 @@ export class CourseModel {
     return await courseService.remove(id);
   }
 
-  static async findAll(params?: PaginationRequest): Promise<Course[]> {
-    const courses = await courseService.findAll(params);
-    courses.forEach((c) => zodValidate(c, courseSchema));
-    return courses;
+  static async findAll(
+    params?: PaginationRequest
+  ): Promise<{ results: Course[]; pagination: PaginationResponse }> {
+    const coursesData = await courseService.findAll(params);
+    coursesData.results.forEach((c) =>
+      zodValidate(
+        c,
+        courseSchema.partial({
+          creator: true,
+          instructors: true,
+          lessons: true,
+        })
+      )
+    );
+    return coursesData;
   }
 
   static async findById(id: number): Promise<Course> {
