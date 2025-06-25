@@ -22,6 +22,9 @@ export const useErrorHandler = () => {
         });
       }
     } else {
+      enqueueSnackbar('Ocorreu um erro inesperado. Por favor, tente novamente.', {
+        variant: 'error',
+      });
       console.error(error);
     }
   };
