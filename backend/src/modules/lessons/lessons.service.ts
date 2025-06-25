@@ -26,15 +26,11 @@ export class LessonsService {
     return this.lessonRepository.save(lesson);
   }
 
-  async findAll(
-    course_id: number,
-    query: FindLessonsDto,
-    current_user: UserPayload,
-  ) {
-    const { search, status, limit, offset = 0 } = query;
+  async findAll(query: FindLessonsDto, current_user: UserPayload) {
+    const { course_id, search, status, limit, offset = 0 } = query;
 
     const course = await this.courseRepository.findOne({
-      where: { id: course_id },
+      where: { id: course_id, creator_id: current_user.id },
       relations: ['instructors'],
     });
 

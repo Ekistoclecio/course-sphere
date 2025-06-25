@@ -119,8 +119,7 @@ export class CoursesService {
     });
 
     const lessons = await this.lessonsService.findAll(
-      id,
-      {} as FindLessonsDto,
+      { course_id: id } as FindLessonsDto,
       current_user,
     );
 
