@@ -92,6 +92,7 @@ export class CoursesService {
     const { limit, offset = 0 } = pagination;
     return this.courseRepository
       .createQueryBuilder('course')
+      .addSelect(['course.updated_at'])
       .leftJoin('course.instructors', 'instructor')
       .where('course.creator_id = :userId OR instructor.id = :userId', {
         userId: current_user.id,
