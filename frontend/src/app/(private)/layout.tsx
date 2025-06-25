@@ -12,9 +12,9 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box display="flex" flexDirection="column" height="100vh">
       <Header />
-      <Box component="main" flexGrow={1} padding={2}>
+      <Box component="main" flexGrow={1} paddingX={4} paddingY={3} overflow="hidden">
         {children}
       </Box>
     </Box>
