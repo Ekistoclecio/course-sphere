@@ -37,13 +37,18 @@ class CourseService extends ApiService {
     return data;
   };
 
-  addInstructor = async (id: number, instructorID: number) => {
-    const { data } = await this.post<Course>(`${id}/instructors`, { instructorID });
+  addInstructor = async (id: number, instructorID: number[]) => {
+    const { data } = await this.patch<Course>(`${id}/instructors`, {
+      instructors_ids: instructorID,
+    });
     return data;
   };
 
-  removeInstructor = async (id: number, instructorID: number) => {
-    await this.delete<void>(`${id}/instructors/${instructorID}`);
+  removeInstructor = async (id: number, instructorID: number[]) => {
+    const { data } = await this.patch<Course>(`${id}/instructors/remove`, {
+      instructors_ids: instructorID,
+    });
+    return data;
   };
 }
 

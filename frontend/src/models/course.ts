@@ -39,7 +39,6 @@ export class CourseModel {
         c,
         courseSchema.partial({
           creator: true,
-          instructors: true,
         })
       )
     );
@@ -52,13 +51,15 @@ export class CourseModel {
     return course;
   }
 
-  static async addInstructor(id: number, instructorID: number): Promise<Course> {
+  static async addInstructor(id: number, instructorID: number[]): Promise<Course> {
     const updated = await courseService.addInstructor(id, instructorID);
     zodValidate(updated, courseSchema);
     return updated;
   }
 
-  static async removeInstructor(id: number, instructorID: number): Promise<void> {
-    await courseService.removeInstructor(id, instructorID);
+  static async removeInstructor(id: number, instructorID: number[]): Promise<Course> {
+    const updated = await courseService.removeInstructor(id, instructorID);
+    zodValidate(updated, courseSchema);
+    return updated;
   }
 }

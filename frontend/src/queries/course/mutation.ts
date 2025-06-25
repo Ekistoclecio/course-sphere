@@ -17,13 +17,13 @@ export const useDeleteCourse = () => {
 };
 
 export const useAddInstructor = () => {
-  return useMutation(({ id, instructorID }: { id: number; instructorID: number }) =>
+  return useMutation(({ id, instructorID }: { id: number; instructorID: number[] }) =>
     CourseModel.addInstructor(id, instructorID)
   );
 };
 
 export const useRemoveInstructor = () => {
-  return useMutation(({ id, instructorID }: { id: number; instructorID: number }) =>
+  return useMutation(({ id, instructorID }: { id: number; instructorID: number[] }) =>
     CourseModel.removeInstructor(id, instructorID)
   );
 };
