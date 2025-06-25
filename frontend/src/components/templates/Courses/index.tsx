@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { Typography, MenuItem, FormControl, Skeleton } from '@mui/material';
 import { Button } from '@/components/atoms/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -16,26 +15,17 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import { Course } from '@/schemas/course/course';
-import { FilterLessonParams, LessonStatus } from '@/services/interfaces';
 import { getYoutubeEmbedUrl } from '@/utils/lessonVideo';
-import { fetchLessons } from '@/queries/lesson/fetch';
-import { usePagination } from '@/hooks/usePagination';
-import { Lesson } from '@/schemas/lesson/lesson';
 import { Pagination } from '@/components/atoms/Pagination';
 import { Feedback } from '@/components/molecules/Feedback';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { User } from '@/schemas/user/user';
 import { InstructorsManagerModal } from '@/components/organisms/InstructorsManager';
 import { EditCourseModal } from '@/components/organisms/EditCourseModal';
 import { ConfirmationModal } from '@/components/organisms/ConfirmationModal';
-import { useErrorHandler } from '@/hooks/useErrorHandler';
-import { useDeleteCourse } from '@/queries/course/mutation';
 import { CreateLessonModal } from '@/components/organisms/CreateLessonModal';
-import { invalidateLessonsCache } from '@/queries/lesson/invalidation';
 import { LessonCard } from '@/components/molecules/LessonCard';
-import { useSnackbar } from 'notistack';
-import { useDebounce } from '@uidotdev/usehooks';
+import { useCourse } from '@/components/templates/Courses/useCourse';
+import { useState } from 'react';
 
 export interface CourseTemplateProps {
   course: Course;
@@ -49,115 +39,31 @@ export const statusOptions = [
 ];
 
 export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTemplateProps) => {
-  const router = useRouter();
-
-  const { errorHandler } = useErrorHandler();
-  const { mutateAsync: deleteCourse } = useDeleteCourse();
-  const { enqueueSnackbar } = useSnackbar();
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
-
-  const debouncedSearch = useDebounce(search, 500);
-  const debouncedStatus = useDebounce(statusFilter, 300);
-
   const [isInstructorsManagerOpen, setIsInstructorsManagerOpen] = useState(false);
   const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
   const [isDeleteCourseOpen, setIsDeleteCourseOpen] = useState(false);
   const [isCreateLessonOpen, setIsCreateLessonOpen] = useState(false);
 
-  const handleCreateLesson = () => {
-    setCurrentLesson(null);
-    invalidateLessonsCache();
-    goToPage(1, { course_id: course.id });
-    setIsCreateLessonOpen(false);
-  };
-
   const {
-    results: lessons,
+    lessons,
     totalPages,
     page,
     isLoading,
-    hasNextPage,
-    offset,
-    removeItemResult,
+    currentLesson,
+    statusFilter,
+    search,
+    handleCreateLesson,
+    handleDeleteCourse,
+    handleEditCourse,
+    handleChangeInstructors,
+    handleDeleteLesson,
+    renderEmptyDescription,
+    setCurrentLesson,
     updateItemResult,
+    setSearch,
+    setStatusFilter,
     goToPage,
-    goToOffset,
-  } = usePagination<Lesson, FilterLessonParams>({
-    fetchFunction: fetchLessons,
-    initialOffset: 0,
-    initialLimit: 5,
-    initialParams: {
-      course_id: course.id,
-    },
-  });
-
-  const handleDeleteCourse = async () => {
-    try {
-      await deleteCourse(course.id);
-      router.push('/dashboard');
-      enqueueSnackbar('Curso deletado com sucesso', { variant: 'success' });
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
-  const handleEditCourse = (course: Course) => {
-    onCourseChangeCallback(course);
-  };
-
-  const handleChangeInstructors = (instructors: User[]) => {
-    onCourseChangeCallback({ ...course, instructors });
-  };
-
-  const handleDeleteLesson = (lesson: Lesson) => {
-    removeItemResult(lesson.id);
-    invalidateLessonsCache();
-    if (lessons.length === 1) {
-      setStatusFilter('all');
-      setSearch('');
-      goToPage(1, { course_id: course.id });
-    }
-    if (currentLesson?.id == lesson.id) {
-      const nextLesson = lessons.find((l) => l.id !== lesson.id);
-      if (nextLesson) {
-        setCurrentLesson(nextLesson);
-      } else setCurrentLesson(null);
-    }
-    if (hasNextPage) {
-      goToOffset({
-        offset: offset + lessons.length - 1,
-        limit: 1,
-        params: { course_id: course.id },
-      });
-    }
-  };
-
-  const renderEmptyDescription = () => {
-    if (search.length > 0) {
-      return `Nenhuma aula encontrada com o termo "${search}"`;
-    }
-    if (statusFilter !== 'all') {
-      return 'Nenhuma aula encontrada com este status';
-    }
-    return 'Crie uma aula para começar a ensinar';
-  };
-
-  useEffect(() => {
-    if (lessons.length > 0) {
-      setCurrentLesson(lessons[0]);
-    }
-  }, [lessons]);
-
-  useEffect(() => {
-    goToPage(1, {
-      course_id: course.id,
-      ...(debouncedSearch && { search: debouncedSearch }),
-      ...(debouncedStatus !== 'all' && { status: debouncedStatus as LessonStatus }),
-    });
-    setCurrentLesson(null);
-  }, [debouncedSearch, debouncedStatus]);
+  } = useCourse({ course, onCourseChangeCallback });
 
   return (
     <S.Root>
