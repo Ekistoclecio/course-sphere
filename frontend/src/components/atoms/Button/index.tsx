@@ -6,6 +6,7 @@ import * as S from './styles';
 
 export interface ButtonProps extends MuiButtonProps {
   loading?: boolean;
+  loadingSize?: number;
   width?: string | number;
 }
 
@@ -15,6 +16,7 @@ export const Button = ({
   disabled,
   className,
   width,
+  loadingSize = 24,
   ...props
 }: ButtonProps) => {
   return (
@@ -27,7 +29,7 @@ export const Button = ({
     >
       <S.Content isLoading={loading}>{children}</S.Content>
 
-      {loading && <S.Spinner spinnerSize={24} size={24} />}
+      {loading && <S.Spinner spinnerSize={loadingSize} size={loadingSize} />}
     </S.Root>
   );
 };
