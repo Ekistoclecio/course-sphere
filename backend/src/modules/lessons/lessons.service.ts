@@ -2,18 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from 'src/modules/lessons/entities/lesson.entity';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindLessonsDto } from 'src/modules/lessons/dto/find-lesson.det';
 import { UserPayload } from 'src/modules/auth/guards/auth-token.guard';
-import { CoursesService } from 'src/modules/courses/courses.service';
+import { Course } from 'src/modules/courses/entities/course.entity';
 
 @Injectable()
 export class LessonsService {
   constructor(
     @InjectRepository(Lesson)
     private readonly lessonRepository: Repository<Lesson>,
-    private readonly courseService: CoursesService,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
   ) {}
 
   create(createLessonDto: CreateLessonDto, current_user: UserPayload) {
@@ -30,25 +31,40 @@ export class LessonsService {
     query: FindLessonsDto,
     current_user: UserPayload,
   ) {
-    const { search, status, limit = 10, offset = 0 } = query;
-    const course = await this.courseService.findOne(course_id, current_user);
+    const { search, status, limit, offset = 0 } = query;
+    const course = await this.courseRepository.findOne({
+      where: { id: course_id },
+      relations: ['instructors'],
+    });
+
+    if (
+      !course ||
+      (course.creator_id !== current_user.id &&
+        !course.instructors.some((i) => i.id === current_user.id))
+    ) {
+      throw new NotFoundException('Curso não encontrado.');
+    }
 
     if (!course) {
       throw new NotFoundException(`Curso não encontrado.`);
     }
 
-    return this.lessonRepository.find({
-      where: {
-        ...(search && { title: ILike(`%${search}%`) }),
-        ...(status && { status }),
-        course_id,
-      },
-      order: {
-        updated_at: 'DESC',
-      },
-      take: limit,
-      skip: offset,
-    });
+    const qb = this.lessonRepository
+      .createQueryBuilder('lesson')
+      .where('lesson.course_id = :course_id', { course_id })
+      .orderBy('lesson.updated_at', 'DESC')
+      .take(limit)
+      .skip(offset);
+
+    if (search) {
+      qb.andWhere('lesson.title ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (status) {
+      qb.andWhere('lesson.status = :status', { status });
+    }
+
+    return qb.getMany();
   }
 
   async findOne(id: number) {
