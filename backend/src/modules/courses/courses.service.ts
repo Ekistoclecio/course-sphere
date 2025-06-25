@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,6 +14,8 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateInstructorsDto } from 'src/modules/courses/dto/update-instructors';
 import { User } from 'src/modules/users/entities/user.entity';
 import { UserPayload } from 'src/modules/auth/guards/auth-token.guard';
+import { LessonsService } from 'src/modules/lessons/lessons.service';
+import { FindLessonsDto } from 'src/modules/lessons/dto/find-lesson.det';
 
 @Injectable()
 export class CoursesService {
@@ -19,6 +23,8 @@ export class CoursesService {
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @Inject(forwardRef(() => LessonsService))
+    private readonly lessonsService: LessonsService,
   ) {}
 
   create(createCourseDto: CreateCourseDto, current_user: UserPayload) {
@@ -83,7 +89,7 @@ export class CoursesService {
   }
 
   findAll(pagination: PaginationDto, current_user: UserPayload) {
-    const { limit = 10, offset = 0 } = pagination;
+    const { limit, offset = 0 } = pagination;
     return this.courseRepository
       .createQueryBuilder('course')
       .leftJoin('course.instructors', 'instructor')
@@ -102,6 +108,12 @@ export class CoursesService {
       relations: ['instructors'],
     });
 
+    const lessons = await this.lessonsService.findAll(
+      id,
+      {} as FindLessonsDto,
+      current_user,
+    );
+
     if (
       !course ||
       (course.creator_id !== current_user.id &&
@@ -112,7 +124,7 @@ export class CoursesService {
       throw new NotFoundException('Curso não encontrado.');
     }
 
-    return course;
+    return { ...course, lessons };
   }
 
   async update(id: number, updateCourseDto: UpdateCourseDto) {
