@@ -8,7 +8,6 @@ import { Controller } from 'react-hook-form';
 import { CustomModal } from '@/components/molecules/CustomModal';
 import dayjs from 'dayjs';
 import { Course } from '@/schemas/course/course';
-import { InfoNotice } from '@/components/atoms/InfoNotice';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import { useEditCourseModal } from '@/components/organisms/EditCourseModal/useEditCourseModal';
 
@@ -101,7 +100,6 @@ export const EditCourseModal = ({
                 />
               )}
             />
-            <InfoNotice message="A alteração da data de término não irá afetar as aulas já criadas. Caso ja tenham sido marcadas como arquivadas continuara sendo arquivadas." />
           </Box>
         </Box>
       </CustomModal.Content>
