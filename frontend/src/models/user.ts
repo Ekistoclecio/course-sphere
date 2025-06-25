@@ -12,7 +12,7 @@ export class UserModel {
     return createdUser;
   }
 
-  static async update(user: EditProfileData, id: number): Promise<User> {
+  static async update(user: Partial<EditProfileData>, id: number): Promise<User> {
     zodValidate(user, profileUpdateBaseSchema.partial());
     const updatedUser = await userService.update(user, id);
     zodValidate(updatedUser, userSchema);
