@@ -3,7 +3,7 @@ import { zodValidate } from '@/utils/zod/validate';
 import { Lesson, lessonSchema } from '@/schemas/lesson/lesson';
 import { CreateLessonData, createLessonBaseSchema } from '@/schemas/lesson/createLesson';
 import { UpdateLessonData, updateLessonBaseSchema } from '@/schemas/lesson/updateLesson';
-import { PaginationRequest, PaginationResponse } from '@/services/interfaces';
+import { FilterLessonParams, PaginationResponse } from '@/services/interfaces';
 
 export class LessonModel {
   static async create(lesson: CreateLessonData): Promise<Lesson> {
@@ -25,7 +25,7 @@ export class LessonModel {
   }
 
   static async findAll(
-    params?: PaginationRequest
+    params: FilterLessonParams
   ): Promise<{ results: Lesson[]; pagination: PaginationResponse }> {
     const lessonsData = await lessonService.findAll(params);
     lessonsData.results.forEach((l) => zodValidate(l, lessonSchema));
