@@ -2,7 +2,7 @@ import { Course } from '@/schemas/course/course';
 import { CreateCourseData } from '@/schemas/course/createCourse';
 import { UpdateCourseData } from '@/schemas/course/updateCourse';
 import { ApiService } from '@/services/client';
-import { PaginationRequest } from '@/services/interfaces';
+import { PaginationRequest, PaginationResponse } from '@/services/interfaces';
 
 class CourseService extends ApiService {
   constructor() {
@@ -25,7 +25,10 @@ class CourseService extends ApiService {
   };
 
   findAll = async (params: PaginationRequest = { offset: 0, limit: 12 }) => {
-    const { data } = await this.get<Course[]>('', { params });
+    const { data } = await this.get<{ results: Course[]; pagination: PaginationResponse }>('', {
+      params,
+    });
+    console.log(data);
     return data;
   };
 
