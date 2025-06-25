@@ -22,7 +22,7 @@ export class CourseModel {
   static async update(course: UpdateCourseData, id: number): Promise<Course> {
     zodValidate(course, updateCourseBaseSchema);
     const updatedCourse = await courseService.update(course, id);
-    zodValidate(updatedCourse, courseSchema);
+    zodValidate(updatedCourse, courseSchema.partial({ instructors: true, creator: true }));
     return updatedCourse;
   }
 
