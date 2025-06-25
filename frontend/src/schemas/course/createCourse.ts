@@ -10,22 +10,25 @@ export const createCourseBaseSchema = z.object({
     .string()
     .max(500, { message: 'A descrição deve ter no máximo 500 caracteres.' })
     .optional(),
-  start_date: z
-    .string()
-    .datetime({ message: 'A data de início deve ser uma data válida.' })
-    .nonempty({ message: 'A data de início é obrigatória.' }),
-  end_date: z
-    .string()
-    .datetime({ message: 'A data de término deve ser uma data válida.' })
-    .nonempty({ message: 'A data de término é obrigatória.' }),
+  start_date: z.string().datetime({ message: 'Data de início inválida' }),
+  end_date: z.string().datetime({ message: 'Data de término inválida' }),
 });
 
-export const createCourseSchema = createCourseBaseSchema.refine(
-  (data) => new Date(data.end_date) > new Date(data.start_date),
-  {
-    path: ['end_date'],
-    message: 'A data de término deve ser posterior à data de início.',
+export const createCourseSchema = createCourseBaseSchema.superRefine((data, ctx) => {
+  const start = new Date(data.start_date);
+  const end = new Date(data.end_date);
+
+  console.log(start, end);
+
+  if (start.toString() === 'Invalid Date' || end.toString() === 'Invalid Date') return;
+
+  if (end <= start) {
+    ctx.addIssue({
+      path: ['end_date'],
+      code: z.ZodIssueCode.custom,
+      message: 'A data de término deve ser posterior à data de início.',
+    });
   }
-);
+});
 
 export type CreateCourseData = z.infer<typeof createCourseSchema>;
