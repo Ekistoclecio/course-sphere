@@ -1,5 +1,6 @@
 import {
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -9,6 +10,7 @@ import {
 } from 'class-validator';
 import { IsFutureDate } from 'src/common/decorators/is-future-date.decorator';
 import { IsVideoUrl } from 'src/common/decorators/is-video-url.decorator';
+import { LessonStatus } from 'src/modules/lessons/entities/lesson.entity';
 
 export class CreateLessonDto {
   @IsString({ message: 'O título deve ser um texto.' })
@@ -26,6 +28,13 @@ export class CreateLessonDto {
     message: 'A data de publicação deve ser uma data futura.',
   })
   publish_date: Date;
+
+  @IsEnum(LessonStatus, {
+    message:
+      'Status inválido. Os valores permitidos são: Rascunho, Publicado ou Arquivado.',
+  })
+  @IsNotEmpty({ message: 'O status é obrigatório.' })
+  status: LessonStatus;
 
   @IsUrl({}, { message: 'A URL do vídeo deve ser válida.' })
   @IsNotEmpty({ message: 'A URL do vídeo é obrigatória.' })
