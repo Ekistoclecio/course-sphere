@@ -59,5 +59,6 @@ export const palette: Partial<Palette> = {
     default: '#0A1A33',
     paper: '#F3F6FA',
     header: '#1B2A52',
+    card: '#25365C',
   },
 };
