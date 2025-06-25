@@ -11,6 +11,7 @@ import { User } from '@/schemas/user/user';
 import { EditCourseModal } from '@/components/organisms/EditCourseModal';
 import { useCourseCard } from './useCourseCard';
 import { InstructorsManagerModal } from '@/components/organisms/InstructorsManager';
+import dayjs from 'dayjs';
 
 export type CourseCardProps = {
   course: Course;
@@ -35,6 +36,7 @@ export const CourseCard = ({
     handleEditCourse,
     handleInstructorsChange,
     setIsInstructorsManagerModalOpen,
+    openCoursePage,
   } = useCourseCard({ course, onDeleteCallback, onEditCallback, onInstructorsChangeCallback });
 
   return (
@@ -74,10 +76,10 @@ export const CourseCard = ({
           </S.DescriptionBox>
 
           <Typography variant="caption" color="text.disabled" display="block">
-            Data de início: <strong>{course.start_date}</strong>
+            Data de início: <strong>{dayjs(course.start_date).format('DD/MM/YYYY')}</strong>
           </Typography>
           <Typography variant="caption" color="text.disabled" display="block">
-            Data de término: <strong>{course.end_date}</strong>
+            Data de término: <strong>{dayjs(course.end_date).format('DD/MM/YYYY')}</strong>
           </Typography>
         </S.CardContent>
 
@@ -90,7 +92,7 @@ export const CourseCard = ({
           >
             Instrutores
           </Button>
-          <Button size="small" variant="contained">
+          <Button size="small" variant="contained" onClick={openCoursePage}>
             Acessar
           </Button>
         </S.CardActions>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Course } from '@/schemas/course/course';
 import { CourseCardProps } from '.';
 import { User } from '@/schemas/user/user';
+import { useRouter } from 'next/navigation';
 
 export const useCourseCard = ({
   course,
@@ -16,7 +17,7 @@ export const useCourseCard = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isInstructorsManagerModalOpen, setIsInstructorsManagerModalOpen] = useState(false);
   const { mutateAsync: deleteCourse } = useDeleteCourse();
-
+  const router = useRouter();
   const handleDeleteCourse = async () => {
     try {
       await deleteCourse(course.id);
@@ -34,6 +35,10 @@ export const useCourseCard = ({
     onInstructorsChangeCallback?.(course, instructors);
   };
 
+  const openCoursePage = () => {
+    router.push(`/courses/${course.id}`);
+  };
+
   return {
     isConfirmationModalOpen,
     isEditModalOpen,
@@ -44,5 +49,6 @@ export const useCourseCard = ({
     handleEditCourse,
     handleInstructorsChange,
     setIsInstructorsManagerModalOpen,
+    openCoursePage,
   };
 };
