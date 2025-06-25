@@ -45,6 +45,7 @@ export const useConfirmationModal = ({
     setIsLoading(true);
     await onConfirm();
     setIsLoading(false);
+    handleClose();
   };
 
   return {
