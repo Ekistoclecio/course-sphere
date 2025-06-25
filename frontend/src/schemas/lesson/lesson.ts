@@ -8,6 +8,7 @@ export const lessonSchema = z.object({
   video_url: z.string().url({ message: 'A URL do vídeo deve ser válida.' }),
   course_id: z.number(),
   creator_id: z.number(),
+  can_manage: z.boolean(),
 });
 
 export type Lesson = z.infer<typeof lessonSchema>;

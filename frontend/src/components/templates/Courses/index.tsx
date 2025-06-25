@@ -185,32 +185,34 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
               Criar aula
             </Button>
 
-            <PopupMenu
-              trigger={
-                <Button variant="contained" color="primary" startIcon={<SettingsIcon />}>
-                  Gerenciar curso
-                </Button>
-              }
-            >
-              <PopupMenu.Item
-                icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
-                onClick={() => setIsEditCourseOpen(true)}
+            {course.can_manage && (
+              <PopupMenu
+                trigger={
+                  <Button variant="contained" color="primary" startIcon={<SettingsIcon />}>
+                    Gerenciar curso
+                  </Button>
+                }
               >
-                Editar
-              </PopupMenu.Item>
-              <PopupMenu.Item
-                icon={<ManageAccountsIcon fontSize="large" sx={{ color: 'text.primary' }} />}
-                onClick={() => setIsInstructorsManagerOpen(true)}
-              >
-                Instrutores
-              </PopupMenu.Item>
-              <PopupMenu.Item
-                icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
-                onClick={() => setIsDeleteCourseOpen(true)}
-              >
-                Excluir
-              </PopupMenu.Item>
-            </PopupMenu>
+                <PopupMenu.Item
+                  icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
+                  onClick={() => setIsEditCourseOpen(true)}
+                >
+                  Editar
+                </PopupMenu.Item>
+                <PopupMenu.Item
+                  icon={<ManageAccountsIcon fontSize="large" sx={{ color: 'text.primary' }} />}
+                  onClick={() => setIsInstructorsManagerOpen(true)}
+                >
+                  Instrutores
+                </PopupMenu.Item>
+                <PopupMenu.Item
+                  icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
+                  onClick={() => setIsDeleteCourseOpen(true)}
+                >
+                  Excluir
+                </PopupMenu.Item>
+              </PopupMenu>
+            )}
           </S.HeaderActions>
         </S.Header>
 
@@ -294,6 +296,7 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
                   <LessonCard
                     key={lesson.id}
                     lesson={lesson}
+                    canManage={lesson.can_manage || course.can_manage}
                     selectedLesson={currentLesson}
                     onSelectLessonCallback={setCurrentLesson}
                     onEditLessonCallback={updateItemResult}

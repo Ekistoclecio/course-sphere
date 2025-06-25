@@ -45,26 +45,28 @@ export const CourseCard = ({
         <S.CardHeader
           title={<S.Title variant="h5">{course.name}</S.Title>}
           action={
-            <PopupMenu
-              trigger={
-                <IconButton aria-label="Configurações do curso">
-                  <S.SettingsOutlinedIcon />
-                </IconButton>
-              }
-            >
-              <PopupMenu.Item
-                icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
-                onClick={() => setIsEditModalOpen(true)}
+            course.can_manage && (
+              <PopupMenu
+                trigger={
+                  <IconButton aria-label="Configurações do curso">
+                    <S.SettingsOutlinedIcon />
+                  </IconButton>
+                }
               >
-                Editar
-              </PopupMenu.Item>
-              <PopupMenu.Item
-                icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
-                onClick={() => setIsConfirmationModalOpen(true)}
-              >
-                Excluir
-              </PopupMenu.Item>
-            </PopupMenu>
+                <PopupMenu.Item
+                  icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
+                  onClick={() => setIsEditModalOpen(true)}
+                >
+                  Editar
+                </PopupMenu.Item>
+                <PopupMenu.Item
+                  icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
+                  onClick={() => setIsConfirmationModalOpen(true)}
+                >
+                  Excluir
+                </PopupMenu.Item>
+              </PopupMenu>
+            )
           }
         />
 
@@ -84,14 +86,16 @@ export const CourseCard = ({
         </S.CardContent>
 
         <S.CardActions>
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() => setIsInstructorsManagerModalOpen(true)}
-            color="secondary"
-          >
-            Instrutores
-          </Button>
+          {course.can_manage && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setIsInstructorsManagerModalOpen(true)}
+              color="secondary"
+            >
+              Instrutores
+            </Button>
+          )}
           <Button size="small" variant="contained" onClick={openCoursePage}>
             Acessar
           </Button>
