@@ -7,6 +7,7 @@ import { SignUpData } from '@/schemas/user/signup';
 import { useEffect, useState } from 'react';
 import { Course } from '@/schemas/course/course';
 import { fetchRandomUsers } from '@/queries/user/fetch';
+import { invalidateUsersCache } from '@/queries/user/invalidation';
 
 type TabKey = 'add' | 'remove';
 
@@ -34,6 +35,7 @@ export const useInstructorsManager = (
         id: course.id,
         instructorID: [registeredUser.id],
       });
+      invalidateUsersCache();
       onInstructorsChangeCallback(currentInstructors.instructors);
     } catch (error) {
       errorHandler(error);
