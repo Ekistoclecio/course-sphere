@@ -1,7 +1,8 @@
 'use client';
 
+import { usePopupMenu } from '@/components/organisms/PopupMenu/usePopupMenu';
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { ReactElement, ReactNode, cloneElement, useState } from 'react';
+import { ReactElement, ReactNode, cloneElement } from 'react';
 
 interface TriggerProps {
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
@@ -28,16 +29,7 @@ interface PopupMenuProps {
 }
 
 export function PopupMenu({ trigger, children }: PopupMenuProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { anchorEl, open, handleClick, handleClose } = usePopupMenu();
 
   return (
     <>
