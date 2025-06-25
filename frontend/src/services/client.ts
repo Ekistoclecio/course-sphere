@@ -1,11 +1,6 @@
+import { ApiErrorResponse } from '@/services/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getSession, signOut } from 'next-auth/react';
-
-export interface ApiErrorResponse {
-  message: string | string[];
-  error: string;
-  statusCode: number;
-}
 
 class ApiService {
   private api: AxiosInstance;
