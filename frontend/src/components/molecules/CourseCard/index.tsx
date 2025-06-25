@@ -100,7 +100,7 @@ export const CourseCard = ({
       <ConfirmationModal
         variant="error"
         title="Excluir curso"
-        description={`Tem certeza que deseja excluir o curso ${course.name}?`}
+        description={`Tem certeza que deseja excluir o curso "${course.name}"?`}
         open={isConfirmationModalOpen}
         onClose={() => setIsConfirmationModalOpen(false)}
         onConfirm={handleDeleteCourse}
