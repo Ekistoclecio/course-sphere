@@ -3,6 +3,7 @@ import { useDeleteCourse } from '@/queries/course/mutation';
 import { useState } from 'react';
 import { Course } from '@/schemas/course/course';
 import { CourseCardProps } from '.';
+import { User } from '@/schemas/user/user';
 
 export const useCourseCard = ({
   course,
@@ -13,7 +14,7 @@ export const useCourseCard = ({
   const { errorHandler } = useErrorHandler();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  const [isInstructorsManagerModalOpen, setIsInstructorsManagerModalOpen] = useState(false);
   const { mutateAsync: deleteCourse } = useDeleteCourse();
 
   const handleDeleteCourse = async () => {
@@ -29,17 +30,19 @@ export const useCourseCard = ({
     onEditCallback?.(editedCourse);
   };
 
-  const handleInstructorsChange = () => {
-    onInstructorsChangeCallback?.(course, []);
+  const handleInstructorsChange = (instructors: User[]) => {
+    onInstructorsChangeCallback?.(course, instructors);
   };
 
   return {
     isConfirmationModalOpen,
     isEditModalOpen,
+    isInstructorsManagerModalOpen,
     setIsConfirmationModalOpen,
     setIsEditModalOpen,
     handleDeleteCourse,
     handleEditCourse,
     handleInstructorsChange,
+    setIsInstructorsManagerModalOpen,
   };
 };

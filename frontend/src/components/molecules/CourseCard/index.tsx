@@ -10,6 +10,7 @@ import { Course } from '@/schemas/course/course';
 import { User } from '@/schemas/user/user';
 import { EditCourseModal } from '@/components/organisms/EditCourseModal';
 import { useCourseCard } from './useCourseCard';
+import { InstructorsManagerModal } from '@/components/organisms/InstructorsManager';
 
 export type CourseCardProps = {
   course: Course;
@@ -26,12 +27,14 @@ export const CourseCard = ({
 }: CourseCardProps) => {
   const {
     isConfirmationModalOpen,
-    setIsConfirmationModalOpen,
     isEditModalOpen,
+    isInstructorsManagerModalOpen,
+    setIsConfirmationModalOpen,
     setIsEditModalOpen,
     handleDeleteCourse,
     handleEditCourse,
     handleInstructorsChange,
+    setIsInstructorsManagerModalOpen,
   } = useCourseCard({ course, onDeleteCallback, onEditCallback, onInstructorsChangeCallback });
 
   return (
@@ -82,7 +85,7 @@ export const CourseCard = ({
           <Button
             size="small"
             variant="outlined"
-            onClick={handleInstructorsChange}
+            onClick={() => setIsInstructorsManagerModalOpen(true)}
             color="secondary"
           >
             Instrutores
@@ -105,6 +108,13 @@ export const CourseCard = ({
         onClose={() => setIsEditModalOpen(false)}
         onEditSuccessCallback={handleEditCourse}
         course={course}
+      />
+      <InstructorsManagerModal
+        open={isInstructorsManagerModalOpen}
+        onClose={() => setIsInstructorsManagerModalOpen(false)}
+        onInstructorsChangeCallback={handleInstructorsChange}
+        course={course}
+        current={course.instructors}
       />
     </>
   );
