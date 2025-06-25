@@ -11,7 +11,7 @@ export const courseSchema = z.object({
   creator_id: z.number(),
   creator: userSchema,
   instructors: z.array(userSchema),
-  lessons: z.array(lessonSchema).optional(),
+  lessons: z.array(lessonSchema),
 });
 
 export type Course = z.infer<typeof courseSchema>;
