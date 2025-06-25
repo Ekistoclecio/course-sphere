@@ -3,6 +3,8 @@ import { signUpBaseSchema, SignUpData } from '@/schemas/user/signup';
 import { userSchema, User } from '@/schemas/user/user';
 import { userService } from '@/services/user';
 import { zodValidate } from '@/utils/zod/validate';
+import { randomUserSchema } from '@/schemas/user/randomUser';
+import { RandomUsersServiceInstance } from '@/services/randomUsers';
 
 export class UserModel {
   static async create(user: SignUpData): Promise<User> {
@@ -21,5 +23,17 @@ export class UserModel {
 
   static async remove(userID: number): Promise<void> {
     return await userService.remove(userID);
+  }
+
+  static async getRandomUsers(results: number): Promise<SignUpData[]> {
+    const { data } = await RandomUsersServiceInstance.getUsers(results);
+    data.results.forEach((u) => zodValidate(u, randomUserSchema));
+    const users = data.results.map((u) => ({
+      name: `${u.name.first} ${u.name.last}`,
+      email: u.email,
+      password: u.login.password,
+      confirm_password: u.login.password,
+    }));
+    return users;
   }
 }
