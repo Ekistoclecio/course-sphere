@@ -2,7 +2,7 @@ import { CreateLessonData } from '@/schemas/lesson/createLesson';
 import { Lesson } from '@/schemas/lesson/lesson';
 import { UpdateLessonData } from '@/schemas/lesson/updateLesson';
 import { ApiService } from '@/services/client';
-import { PaginationRequest, PaginationResponse } from '@/services/interfaces';
+import { FilterLessonParams, PaginationResponse } from '@/services/interfaces';
 
 class LessonService extends ApiService {
   constructor() {
@@ -24,7 +24,7 @@ class LessonService extends ApiService {
     return;
   };
 
-  findAll = async (params: PaginationRequest = { offset: 0, limit: 12 }) => {
+  findAll = async (params: FilterLessonParams) => {
     const { data } = await this.get<{ results: Lesson[]; pagination: PaginationResponse }>('', {
       params,
     });
