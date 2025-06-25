@@ -16,7 +16,7 @@ export class LessonsTasksService {
     private readonly lessonRepository: Repository<Lesson>,
   ) {}
 
-  @Cron(CronExpression.EVERY_SECOND)
+  @Cron(CronExpression.EVERY_6_HOURS)
   async updateLessonsStatus() {
     this.logger.log('Executando atualização de status das aulas...');
 
