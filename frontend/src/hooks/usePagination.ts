@@ -3,19 +3,21 @@ import { paginationResultsReducer } from '@/reducers/paginationResults';
 import { PaginationRequest, PaginationResponse } from '@/services/interfaces';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 
-interface UsePaginationProps<T> {
-  fetchFunction: (
-    params: PaginationRequest
-  ) => Promise<{ results: T[]; pagination: PaginationResponse }>;
+interface UsePaginationProps<T, P extends PaginationRequest = PaginationRequest> {
+  fetchFunction: (params: P) => Promise<{ results: T[]; pagination: PaginationResponse }>;
   initialOffset?: number;
   initialLimit?: number;
+  initialParams?: Partial<P>;
 }
-
-export const usePagination = <T extends { id: number | string }>({
+export const usePagination = <
+  T extends { id: string | number },
+  P extends PaginationRequest = PaginationRequest,
+>({
   fetchFunction,
   initialOffset = 0,
   initialLimit = 12,
-}: UsePaginationProps<T>) => {
+  initialParams,
+}: UsePaginationProps<T, P>) => {
   const { errorHandler } = useErrorHandler();
   const [offset, setOffset] = useState(initialOffset);
   const [limit, setLimit] = useState(initialLimit);
@@ -26,10 +28,15 @@ export const usePagination = <T extends { id: number | string }>({
   const page = useMemo(() => Math.floor(offset / limit) + 1, [offset, limit]);
   const totalPages = useMemo(() => Math.ceil(total / limit), [total, limit]);
 
-  const fetchData = async (offset: number, limit: number, resetResults = true) => {
+  const fetchData = async (
+    offset: number,
+    limit: number,
+    resetResults = true,
+    params?: Partial<P>
+  ) => {
     try {
       setIsLoading(true);
-      const response = await fetchFunction({ offset, limit });
+      const response = await fetchFunction({ offset, limit, ...(params || {}) } as P);
       if (resetResults) {
         dispatchResults({ type: 'SET_ALL', payload: response.results });
       } else {
@@ -45,19 +52,21 @@ export const usePagination = <T extends { id: number | string }>({
     }
   };
 
-  const goToPage = async (pageNumber: number) => {
+  const goToPage = async (pageNumber: number, params?: Partial<P>) => {
     const newOffset = (pageNumber - 1) * limit;
-    await fetchData(newOffset, limit);
+    await fetchData(newOffset, limit, true, params);
   };
 
   const goToOffset = async ({
     offset: newOffset,
     limit: newLimit = limit,
+    params,
   }: {
     offset: number;
     limit?: number;
+    params?: Partial<P>;
   }) => {
-    await fetchData(newOffset, newLimit, false);
+    await fetchData(newOffset, newLimit, false, params);
   };
 
   const removeItemResult = (id: number | string) => {
@@ -69,8 +78,7 @@ export const usePagination = <T extends { id: number | string }>({
   };
 
   useEffect(() => {
-    fetchData(offset, limit);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData(offset, limit, true, initialParams);
   }, []);
 
   return {
@@ -83,7 +91,6 @@ export const usePagination = <T extends { id: number | string }>({
     totalPages,
     hasNextPage: page < totalPages,
     hasPreviousPage: page > 1,
-    fetchData,
     goToPage,
     goToOffset,
     removeItemResult,
