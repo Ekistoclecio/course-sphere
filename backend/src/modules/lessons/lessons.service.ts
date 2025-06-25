@@ -32,6 +32,7 @@ export class LessonsService {
     current_user: UserPayload,
   ) {
     const { search, status, limit, offset = 0 } = query;
+
     const course = await this.courseRepository.findOne({
       where: { id: course_id },
       relations: ['instructors'],
@@ -45,16 +46,9 @@ export class LessonsService {
       throw new NotFoundException('Curso não encontrado.');
     }
 
-    if (!course) {
-      throw new NotFoundException(`Curso não encontrado.`);
-    }
-
     const qb = this.lessonRepository
       .createQueryBuilder('lesson')
-      .where('lesson.course_id = :course_id', { course_id })
-      .orderBy('lesson.updated_at', 'DESC')
-      .take(limit)
-      .skip(offset);
+      .where('lesson.course_id = :course_id', { course_id });
 
     if (search) {
       qb.andWhere('lesson.title ILIKE :search', { search: `%${search}%` });
@@ -64,7 +58,20 @@ export class LessonsService {
       qb.andWhere('lesson.status = :status', { status });
     }
 
-    return qb.getMany();
+    const [results, total] = await qb
+      .orderBy('lesson.updated_at', 'DESC')
+      .take(limit)
+      .skip(offset)
+      .getManyAndCount();
+
+    return {
+      results,
+      pagination: {
+        total,
+        offset,
+        count: results.length,
+      },
+    };
   }
 
   async findOne(id: number) {

@@ -88,9 +88,9 @@ export class CoursesService {
     return this.courseRepository.save(course);
   }
 
-  findAll(pagination: PaginationDto, current_user: UserPayload) {
+  async findAll(pagination: PaginationDto, current_user: UserPayload) {
     const { limit, offset = 0 } = pagination;
-    return this.courseRepository
+    const [results, total] = await this.courseRepository
       .createQueryBuilder('course')
       .addSelect(['course.updated_at'])
       .leftJoin('course.instructors', 'instructor')
@@ -100,7 +100,16 @@ export class CoursesService {
       .orderBy('course.updated_at', 'DESC')
       .take(limit)
       .skip(offset)
-      .getMany();
+      .getManyAndCount();
+
+    return {
+      results,
+      pagination: {
+        total,
+        offset,
+        count: results.length,
+      },
+    };
   }
 
   async findOne(id: number, current_user: UserPayload) {
