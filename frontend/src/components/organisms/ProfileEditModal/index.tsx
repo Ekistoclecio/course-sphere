@@ -21,7 +21,7 @@ export const ProfileEditModal = ({ open, onClose }: ProfileEditModalProps) => {
       <CustomModal.Header>
         <Box display="flex" alignItems="center" gap={1}>
           <EditOutlinedIcon sx={{ fontSize: 24 }} color="primary" />
-          <Typography variant="h4">Editar Perfil</Typography>
+          <Typography variant="h4">Editar perfil</Typography>
         </Box>
       </CustomModal.Header>
 
@@ -90,7 +90,7 @@ export const ProfileEditModal = ({ open, onClose }: ProfileEditModalProps) => {
           onClick={handleSubmit(handleFormSubmit)}
           disabled={isSubmitting}
         >
-          Salvar
+          Editar
         </Button>
       </CustomModal.Footer>
     </CustomModal>
