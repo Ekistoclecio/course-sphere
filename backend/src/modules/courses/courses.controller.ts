@@ -39,8 +39,10 @@ export class CoursesController {
   addInstructors(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateInstructorsDto,
+    @Req() req: Request,
   ) {
-    return this.coursesService.addInstructors(id, body);
+    const current_user = req['current_user'] as UserPayload;
+    return this.coursesService.addInstructors(id, body, current_user);
   }
 
   @UseGuards(CourseRoutesPoliciesGuard)
@@ -48,8 +50,10 @@ export class CoursesController {
   removeInstructors(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateInstructorsDto,
+    @Req() req: Request,
   ) {
-    return this.coursesService.removeInstructors(id, body);
+    const current_user = req['current_user'] as UserPayload;
+    return this.coursesService.removeInstructors(id, body, current_user);
   }
 
   @Get()
@@ -69,13 +73,16 @@ export class CoursesController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCourseDto: UpdateCourseDto,
+    @Req() req: Request,
   ) {
-    return this.coursesService.update(id, updateCourseDto);
+    const current_user = req['current_user'] as UserPayload;
+    return this.coursesService.update(id, updateCourseDto, current_user);
   }
 
   @UseGuards(CourseRoutesPoliciesGuard)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.coursesService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+    const current_user = req['current_user'] as UserPayload;
+    return this.coursesService.remove(id, current_user);
   }
 }

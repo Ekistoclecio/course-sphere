@@ -27,16 +27,24 @@ export class CoursesService {
     private readonly lessonsService: LessonsService,
   ) {}
 
-  create(createCourseDto: CreateCourseDto, current_user: UserPayload) {
+  async create(createCourseDto: CreateCourseDto, current_user: UserPayload) {
     const newCourse = {
       ...createCourseDto,
       creator_id: current_user.id,
     };
     const course = this.courseRepository.create(newCourse);
-    return this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+    return {
+      ...savedCourse,
+      can_manage: current_user.id === savedCourse.creator_id,
+    };
   }
 
-  async addInstructors(id: number, body: UpdateInstructorsDto) {
+  async addInstructors(
+    id: number,
+    body: UpdateInstructorsDto,
+    current_user: UserPayload,
+  ) {
     const course = await this.courseRepository.findOne({
       where: { id },
       relations: ['instructors'],
@@ -68,10 +76,18 @@ export class CoursesService {
 
     course.instructors = [...course.instructors, ...newInstructors];
 
-    return this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+    return {
+      ...savedCourse,
+      can_manage: current_user.id === savedCourse.creator_id,
+    };
   }
 
-  async removeInstructors(id: number, body: UpdateInstructorsDto) {
+  async removeInstructors(
+    id: number,
+    body: UpdateInstructorsDto,
+    current_user: UserPayload,
+  ) {
     const course = await this.courseRepository.findOne({
       where: { id },
       relations: ['instructors'],
@@ -85,7 +101,11 @@ export class CoursesService {
       (instructor) => !body.instructors_ids.includes(instructor.id),
     );
 
-    return this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+    return {
+      ...savedCourse,
+      can_manage: current_user.id === savedCourse.creator_id,
+    };
   }
 
   async findAll(pagination: PaginationDto, current_user: UserPayload) {
@@ -103,7 +123,10 @@ export class CoursesService {
       .getManyAndCount();
 
     return {
-      results,
+      results: results.map((course) => ({
+        ...course,
+        can_manage: current_user.id === course.creator_id,
+      })),
       pagination: {
         total,
         offset,
@@ -133,10 +156,18 @@ export class CoursesService {
       throw new NotFoundException('Curso não encontrado.');
     }
 
-    return { ...course, lessons };
+    return {
+      ...course,
+      can_manage: current_user.id === course.creator_id,
+      lessons,
+    };
   }
 
-  async update(id: number, updateCourseDto: UpdateCourseDto) {
+  async update(
+    id: number,
+    updateCourseDto: UpdateCourseDto,
+    current_user: UserPayload,
+  ) {
     const course = await this.courseRepository.preload({
       id,
       ...updateCourseDto,
@@ -146,16 +177,24 @@ export class CoursesService {
       throw new NotFoundException('Curso não encontrado.');
     }
 
-    return this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+    return {
+      ...savedCourse,
+      can_manage: current_user.id === savedCourse.creator_id,
+    };
   }
 
-  async remove(id: number) {
+  async remove(id: number, current_user: UserPayload) {
     const course = await this.courseRepository.findOneBy({ id });
 
     if (!course) {
       throw new NotFoundException('Curso não encontrado.');
     }
 
-    return this.courseRepository.remove(course);
+    const savedCourse = await this.courseRepository.remove(course);
+    return {
+      ...savedCourse,
+      can_manage: current_user.id === savedCourse.creator_id,
+    };
   }
 }

@@ -66,7 +66,7 @@ export class LessonRoutesPoliciesGuard implements CanActivate {
   ): Promise<boolean> {
     const lessonId = Number(request.params.id);
 
-    const lesson = await this.lessonsService.findOne(lessonId);
+    const lesson = await this.lessonsService.findOne(lessonId, user);
     if (!lesson) {
       throw new ForbiddenException(
         'Você não tem autorização para realizar esta ação.',

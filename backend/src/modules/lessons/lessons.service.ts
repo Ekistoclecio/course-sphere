@@ -17,13 +17,17 @@ export class LessonsService {
     private readonly courseRepository: Repository<Course>,
   ) {}
 
-  create(createLessonDto: CreateLessonDto, current_user: UserPayload) {
+  async create(createLessonDto: CreateLessonDto, current_user: UserPayload) {
     const newLesson = {
       ...createLessonDto,
       creator_id: current_user.id,
     };
     const lesson = this.lessonRepository.create(newLesson);
-    return this.lessonRepository.save(lesson);
+    const savedLesson = await this.lessonRepository.save(lesson);
+    return {
+      ...savedLesson,
+      can_manage: current_user.id === savedLesson.creator_id,
+    };
   }
 
   async findAll(query: FindLessonsDto, current_user: UserPayload) {
@@ -61,7 +65,10 @@ export class LessonsService {
       .getManyAndCount();
 
     return {
-      results,
+      results: results.map((lesson) => ({
+        ...lesson,
+        can_manage: current_user.id === lesson.creator_id,
+      })),
       pagination: {
         total,
         offset,
@@ -70,17 +77,24 @@ export class LessonsService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, current_user: UserPayload) {
     const lesson = await this.lessonRepository.findOneBy({ id });
 
     if (!lesson) {
       throw new NotFoundException(`Aula não encontrada.`);
     }
 
-    return lesson;
+    return {
+      ...lesson,
+      can_manage: current_user.id === lesson.creator_id,
+    };
   }
 
-  async update(id: number, updateLessonDto: UpdateLessonDto) {
+  async update(
+    id: number,
+    updateLessonDto: UpdateLessonDto,
+    current_user: UserPayload,
+  ) {
     const lesson = await this.lessonRepository.preload({
       id,
       ...updateLessonDto,
@@ -90,16 +104,24 @@ export class LessonsService {
       throw new NotFoundException(`Aula não encontrada.`);
     }
 
-    return this.lessonRepository.save(lesson);
+    const savedLesson = await this.lessonRepository.save(lesson);
+    return {
+      ...savedLesson,
+      can_manage: current_user.id === savedLesson.creator_id,
+    };
   }
 
-  async remove(id: number) {
+  async remove(id: number, current_user: UserPayload) {
     const lesson = await this.lessonRepository.findOneBy({ id });
 
     if (!lesson) {
       throw new NotFoundException(`Aula não encontrada.`);
     }
 
-    return this.lessonRepository.remove(lesson);
+    const savedLesson = await this.lessonRepository.remove(lesson);
+    return {
+      ...savedLesson,
+      can_manage: current_user.id === savedLesson.creator_id,
+    };
   }
 }

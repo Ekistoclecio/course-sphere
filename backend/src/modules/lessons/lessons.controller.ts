@@ -45,13 +45,16 @@ export class LessonsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateLessonDto: UpdateLessonDto,
+    @Req() req: Request,
   ) {
-    return this.lessonsService.update(id, updateLessonDto);
+    const current_user = req['current_user'] as UserPayload;
+    return this.lessonsService.update(id, updateLessonDto, current_user);
   }
 
   @UseGuards(LessonRoutesPoliciesGuard)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.lessonsService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+    const current_user = req['current_user'] as UserPayload;
+    return this.lessonsService.remove(id, current_user);
   }
 }
