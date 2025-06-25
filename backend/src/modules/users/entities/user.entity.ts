@@ -20,9 +20,9 @@ export class User {
   @Column({ type: 'varchar', length: 255, select: false, nullable: false })
   password_hash: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', select: false })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', select: false })
   updated_at: Date;
 }

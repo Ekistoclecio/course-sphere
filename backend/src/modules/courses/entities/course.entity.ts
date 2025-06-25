@@ -54,9 +54,9 @@ export class Course {
   })
   instructors: User[];
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', select: false })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', select: false })
   updated_at: Date;
 }
