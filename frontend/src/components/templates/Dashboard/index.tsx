@@ -66,15 +66,17 @@ export const DashboardTemplate = () => {
             ))}
           </Grid>
         </Box>
-        <Box display="flex" justifyContent="center" mt={2}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={(_, page) => {
-              goToPage(page);
-            }}
-          />
-        </Box>
+        {totalPages > 1 && (
+          <Box display="flex" justifyContent="center" mt={2}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={(_, page) => {
+                goToPage(page);
+              }}
+            />
+          </Box>
+        )}
       </Box>
       <CreateCourseModal
         open={isCreateCourseModalOpen}
