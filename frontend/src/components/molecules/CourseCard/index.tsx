@@ -73,7 +73,7 @@ export const CourseCard = ({
         <S.CardContent>
           <S.DescriptionBox>
             <Typography variant="body2" color="text.disabled">
-              {course.description}
+              {course.description || <i>Sem descrição</i>}
             </Typography>
           </S.DescriptionBox>
 
