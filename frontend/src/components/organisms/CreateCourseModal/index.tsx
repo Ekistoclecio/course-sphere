@@ -10,7 +10,6 @@ import { useCreateCourseModal } from '@/components/organisms/CreateCourseModal/u
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import dayjs from 'dayjs';
 import { Course } from '@/schemas/course/course';
-import { InfoNotice } from '@/components/atoms/InfoNotice';
 
 type CreateCourseModalProps = {
   open: boolean;
@@ -99,7 +98,6 @@ export const CreateCourseModal = ({
                 />
               )}
             />
-            <InfoNotice message="Apos a data de término, todas a as aula criadas dentro desse curso serão automaticamente marcadas como arquivadas pelo sistema." />
           </Box>
         </Box>
       </CustomModal.Content>
