@@ -9,7 +9,13 @@ export class CourseModel {
   static async create(course: CreateCourseData): Promise<Course> {
     zodValidate(course, createCourseBaseSchema);
     const createdCourse = await courseService.create(course);
-    zodValidate(createdCourse, courseSchema);
+    zodValidate(
+      createdCourse,
+      courseSchema.partial({
+        creator: true,
+        instructors: true,
+      })
+    );
     return createdCourse;
   }
 
@@ -34,7 +40,6 @@ export class CourseModel {
         courseSchema.partial({
           creator: true,
           instructors: true,
-          lessons: true,
         })
       )
     );
