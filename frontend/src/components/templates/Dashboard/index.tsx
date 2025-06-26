@@ -44,10 +44,10 @@ export const DashboardTemplate = () => {
           <Feedback
             image={<img src={'/empty.svg'} alt="Nenhum curso encontrado" />}
             title="Nenhum curso encontrado"
-            description="Nenhum curso encontrado"
+            description="Atualmente você não possui nenhum curso cadastrado, clique no botão acima para adicionar um novo curso."
           />
         )}
-        <Box flex="1" overflow="auto" pr={2}>
+        <Box flex="1" maxHeight="725px" overflow="auto" pr={2}>
           <Grid container spacing={3}>
             {courses?.map((course) => (
               <Grid
@@ -67,7 +67,7 @@ export const DashboardTemplate = () => {
           </Grid>
         </Box>
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="center" mt={2}>
+          <Box display="flex" justifyContent="center">
             <Pagination
               count={totalPages}
               page={page}
