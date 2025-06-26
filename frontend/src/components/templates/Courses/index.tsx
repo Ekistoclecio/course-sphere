@@ -2,14 +2,10 @@
 
 import { Typography, MenuItem, FormControl, Skeleton } from '@mui/material';
 import { Button } from '@/components/atoms/Button';
-import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
 import * as S from './styles';
 import dayjs from 'dayjs';
-import { PopupMenu } from '@/components/organisms/PopupMenu';
-import { Delete, Edit } from '@mui/icons-material';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,13 +15,11 @@ import { getYoutubeEmbedUrl } from '@/utils/lessonVideo';
 import { Pagination } from '@/components/atoms/Pagination';
 import { Feedback } from '@/components/molecules/Feedback';
 import Image from 'next/image';
-import { InstructorsManagerModal } from '@/components/organisms/InstructorsManager';
-import { EditCourseModal } from '@/components/organisms/EditCourseModal';
-import { ConfirmationModal } from '@/components/organisms/ConfirmationModal';
 import { CreateLessonModal } from '@/components/organisms/CreateLessonModal';
 import { LessonCard } from '@/components/molecules/LessonCard';
 import { useCourse } from '@/components/templates/Courses/useCourse';
 import { useState } from 'react';
+import { ManagerPopup } from '@/components/templates/Courses/ManagerPopup';
 
 export interface CourseTemplateProps {
   course: Course;
@@ -39,9 +33,6 @@ export const statusOptions = [
 ];
 
 export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTemplateProps) => {
-  const [isInstructorsManagerOpen, setIsInstructorsManagerOpen] = useState(false);
-  const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
-  const [isDeleteCourseOpen, setIsDeleteCourseOpen] = useState(false);
   const [isCreateLessonOpen, setIsCreateLessonOpen] = useState(false);
 
   const {
@@ -53,9 +44,6 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
     statusFilter,
     search,
     handleCreateLesson,
-    handleDeleteCourse,
-    handleEditCourse,
-    handleChangeInstructors,
     handleDeleteLesson,
     renderEmptyDescription,
     setCurrentLesson,
@@ -63,7 +51,7 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
     setSearch,
     setStatusFilter,
     goToPage,
-  } = useCourse({ course, onCourseChangeCallback });
+  } = useCourse({ course });
 
   return (
     <S.Root>
@@ -92,32 +80,7 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
             </Button>
 
             {course.can_manage && (
-              <PopupMenu
-                trigger={
-                  <Button variant="contained" color="primary" startIcon={<SettingsIcon />}>
-                    Gerenciar curso
-                  </Button>
-                }
-              >
-                <PopupMenu.Item
-                  icon={<Edit fontSize="large" sx={{ color: 'text.primary' }} />}
-                  onClick={() => setIsEditCourseOpen(true)}
-                >
-                  Editar
-                </PopupMenu.Item>
-                <PopupMenu.Item
-                  icon={<ManageAccountsIcon fontSize="large" sx={{ color: 'text.primary' }} />}
-                  onClick={() => setIsInstructorsManagerOpen(true)}
-                >
-                  Instrutores
-                </PopupMenu.Item>
-                <PopupMenu.Item
-                  icon={<Delete fontSize="large" sx={{ color: 'text.primary' }} />}
-                  onClick={() => setIsDeleteCourseOpen(true)}
-                >
-                  Excluir
-                </PopupMenu.Item>
-              </PopupMenu>
+              <ManagerPopup course={course} onCourseChangeCallback={onCourseChangeCallback} />
             )}
           </S.HeaderActions>
         </S.Header>
@@ -227,27 +190,6 @@ export const CoursesTemplate = ({ course, onCourseChangeCallback }: CourseTempla
         </S.Content>
       </S.Container>
 
-      <InstructorsManagerModal
-        open={isInstructorsManagerOpen}
-        onClose={() => setIsInstructorsManagerOpen(false)}
-        current={course.instructors}
-        onInstructorsChangeCallback={handleChangeInstructors}
-        course={course}
-      />
-      <EditCourseModal
-        open={isEditCourseOpen}
-        onClose={() => setIsEditCourseOpen(false)}
-        course={course}
-        onEditSuccessCallback={handleEditCourse}
-      />
-      <ConfirmationModal
-        variant="error"
-        title="Excluir curso"
-        description={`Tem certeza que deseja excluir o curso "${course.name}"?`}
-        open={isDeleteCourseOpen}
-        onClose={() => setIsDeleteCourseOpen(false)}
-        onConfirm={handleDeleteCourse}
-      />
       <CreateLessonModal
         open={isCreateLessonOpen}
         onClose={() => setIsCreateLessonOpen(false)}

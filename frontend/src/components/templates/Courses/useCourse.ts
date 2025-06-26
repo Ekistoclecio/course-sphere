@@ -1,29 +1,13 @@
-import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { usePagination } from '@/hooks/usePagination';
 import { Lesson } from '@/schemas/lesson/lesson';
 import { Course } from '@/schemas/course/course';
-import { useRouter } from 'next/navigation';
-import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useDeleteCourse } from '@/queries/course/mutation';
 import { invalidateLessonsCache } from '@/queries/lesson/invalidation';
 import { FilterLessonParams, LessonStatus } from '@/services/interfaces';
-import { User } from '@/schemas/user/user';
 import { fetchLessons } from '@/queries/lesson/fetch';
 import { useDebounce } from '@uidotdev/usehooks';
 
-export const useCourse = ({
-  course,
-  onCourseChangeCallback,
-}: {
-  course: Course;
-  onCourseChangeCallback: (course: Course) => void;
-}) => {
-  const router = useRouter();
-
-  const { errorHandler } = useErrorHandler();
-  const { mutateAsync: deleteCourse } = useDeleteCourse();
-  const { enqueueSnackbar } = useSnackbar();
+export const useCourse = ({ course }: { course: Course }) => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
@@ -56,24 +40,6 @@ export const useCourse = ({
       course_id: course.id,
     },
   });
-
-  const handleDeleteCourse = async () => {
-    try {
-      await deleteCourse(course.id);
-      router.push('/dashboard');
-      enqueueSnackbar('Curso deletado com sucesso', { variant: 'success' });
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
-  const handleEditCourse = (course: Course) => {
-    onCourseChangeCallback(course);
-  };
-
-  const handleChangeInstructors = (instructors: User[]) => {
-    onCourseChangeCallback({ ...course, instructors });
-  };
 
   const handleDeleteLesson = (lesson: Lesson) => {
     removeItemResult(lesson.id);
@@ -129,9 +95,6 @@ export const useCourse = ({
     page,
     isLoading,
     handleCreateLesson,
-    handleDeleteCourse,
-    handleEditCourse,
-    handleChangeInstructors,
     handleDeleteLesson,
     renderEmptyDescription,
     currentLesson,

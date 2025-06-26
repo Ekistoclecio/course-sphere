@@ -16,9 +16,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 export const Root = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(4, 3),
-  overflow: 'scroll',
-  [theme.breakpoints.down('md')]: {
+  overflow: 'auto',
+  [theme.breakpoints.down('lg')]: {
     overflow: 'hidden',
+    minHeight: 'fit-content',
   },
 }));
 
@@ -125,7 +126,7 @@ export const Content = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.emphasis,
   borderRadius: 8,
   padding: theme.spacing(2),
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('lg')]: {
     flexDirection: 'column',
     flex: 'none',
   },
@@ -135,7 +136,7 @@ export const VideoContainer = styled(Box)(({ theme }) => ({
   width: '70%',
   height: '100%',
   minHeight: '500px',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('lg')]: {
     width: '100%',
     height: '500px',
   },
@@ -154,7 +155,7 @@ export const LessonsContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing(2),
   height: '100%',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('lg')]: {
     width: '100%',
     height: 'auto',
   },
@@ -169,7 +170,7 @@ export const LessonsList = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing(2),
   paddingRight: theme.spacing(1),
-  [theme.breakpoints.up('md')]: {
+  [theme.breakpoints.up('lg')]: {
     flex: 1,
     minHeight: 0,
     overflowY: 'auto',
