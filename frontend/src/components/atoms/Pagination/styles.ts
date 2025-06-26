@@ -8,5 +8,8 @@ export const Pagination = styled(MuiPagination)(({ theme }) => ({
     '& svg': {
       fontSize: '24px',
     },
+    '&:hover': {
+      backgroundColor: theme.palette.background.header,
+    },
   },
 }));
