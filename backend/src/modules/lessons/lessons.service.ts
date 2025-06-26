@@ -59,7 +59,7 @@ export class LessonsService {
     }
 
     const [results, total] = await qb
-      .orderBy('lesson.updated_at', 'DESC')
+      .orderBy('lesson.created_at', 'ASC')
       .take(limit)
       .skip(offset)
       .getManyAndCount();
