@@ -61,13 +61,6 @@ Após executar esses comandos:
 - Backend estará disponível em: http://localhost:3001
 - Banco de dados PostgreSQL estará rodando na porta 5432
 
-### Execução com Docker (Produção)
-
-```bash
-# Na raiz do projeto
-docker-compose up --build -d
-```
-
 ## 🌟 Funcionalidades Principais
 
 ### Usuários
