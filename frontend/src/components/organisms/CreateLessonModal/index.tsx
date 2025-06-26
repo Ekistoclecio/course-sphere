@@ -36,7 +36,7 @@ export const CreateLessonModal = ({
   course,
 }: CreateLessonModalProps) => {
   const { register, handleSubmit, control, errors, isSubmitting, handleFormSubmit } =
-    useCreateLessonModal({ onClose, onCreateSuccessCallback, course });
+    useCreateLessonModal({ onClose, onCreateSuccessCallback, course, open });
 
   return (
     <CustomModal open={open} onClose={onClose} width={600}>

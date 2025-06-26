@@ -6,13 +6,16 @@ import { useCreateCourse } from '@/queries/course/mutation';
 import { useSnackbar } from 'notistack';
 import { invalidateCoursesCache } from '@/queries/course/invalidation';
 import { Course } from '@/schemas/course/course';
+import { useEffect } from 'react';
 
 export const useCreateCourseModal = ({
   onClose,
   onCreateSuccessCallback,
+  open,
 }: {
   onClose: () => void;
   onCreateSuccessCallback?: (createdCourse: Course) => void;
+  open: boolean;
 }) => {
   const { mutateAsync: createCourse } = useCreateCourse();
   const { enqueueSnackbar } = useSnackbar();
@@ -46,6 +49,10 @@ export const useCreateCourseModal = ({
       errorHandler(error);
     }
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
 
   return {
     errors,

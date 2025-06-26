@@ -8,16 +8,21 @@ import { useCreateLesson } from '@/queries/lesson/mutation';
 import { Lesson } from '@/schemas/lesson/lesson';
 import { invalidateLessonsCache } from '@/queries/lesson/invalidation';
 import { Course } from '@/schemas/course/course';
+import { useEffect } from 'react';
+
+interface CreateLessonsModalHookProps {
+  onClose: () => void;
+  onCreateSuccessCallback?: (createdLesson: Lesson) => void;
+  course: Course;
+  open: boolean;
+}
 
 export const useCreateLessonModal = ({
   onClose,
   onCreateSuccessCallback,
   course,
-}: {
-  onClose: () => void;
-  onCreateSuccessCallback?: (createdLesson: Lesson) => void;
-  course: Course;
-}) => {
+  open,
+}: CreateLessonsModalHookProps) => {
   const { mutateAsync: createLesson } = useCreateLesson();
   const { enqueueSnackbar } = useSnackbar();
   const { errorHandler } = useErrorHandler();
@@ -52,6 +57,10 @@ export const useCreateLessonModal = ({
       errorHandler(error);
     }
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
 
   return {
     errors,

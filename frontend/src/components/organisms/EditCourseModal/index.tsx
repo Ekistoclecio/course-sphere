@@ -25,7 +25,7 @@ export const EditCourseModal = ({
   course,
 }: EditCourseModalProps) => {
   const { register, handleSubmit, control, errors, isSubmitting, handleFormSubmit } =
-    useEditCourseModal({ onClose, onEditSuccessCallback, course });
+    useEditCourseModal({ onClose, onEditSuccessCallback, course, open });
 
   return (
     <CustomModal open={open} onClose={onClose} width={600}>

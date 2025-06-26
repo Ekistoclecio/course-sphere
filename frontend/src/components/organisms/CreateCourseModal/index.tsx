@@ -23,7 +23,7 @@ export const CreateCourseModal = ({
   onCreateSuccessCallback,
 }: CreateCourseModalProps) => {
   const { register, handleSubmit, control, errors, isSubmitting, handleFormSubmit } =
-    useCreateCourseModal({ onClose, onCreateSuccessCallback });
+    useCreateCourseModal({ onClose, onCreateSuccessCallback, open });
 
   return (
     <CustomModal open={open} onClose={onClose} width={600}>

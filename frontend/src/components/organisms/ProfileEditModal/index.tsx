@@ -14,6 +14,7 @@ type ProfileEditModalProps = {
 export const ProfileEditModal = ({ open, onClose }: ProfileEditModalProps) => {
   const { register, handleSubmit, errors, isSubmitting, handleFormSubmit } = useProfileEditModal({
     onClose,
+    open,
   });
 
   return (

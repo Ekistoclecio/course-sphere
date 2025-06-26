@@ -6,15 +6,18 @@ import { useSnackbar } from 'notistack';
 import { invalidateCoursesCache } from '@/queries/course/invalidation';
 import { Course } from '@/schemas/course/course';
 import { UpdateCourseData, updateCourseSchema } from '@/schemas/course/updateCourse';
+import { useEffect } from 'react';
 
 export const useEditCourseModal = ({
   onClose,
   onEditSuccessCallback,
   course,
+  open,
 }: {
   onClose: () => void;
   onEditSuccessCallback?: (editedCourse: Course) => void;
   course: Course;
+  open: boolean;
 }) => {
   const { mutateAsync: updateCourse } = useUpdateCourse();
   const { enqueueSnackbar } = useSnackbar();
@@ -48,6 +51,10 @@ export const useEditCourseModal = ({
       errorHandler(error);
     }
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
 
   return {
     errors,

@@ -5,12 +5,19 @@ import { useUpdateUser } from '@/queries/user/mutation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { profileUpdateSchema, EditProfileData } from '@/schemas/user/profileEdit';
+import { useEffect } from 'react';
 
-export const useProfileEditModal = ({ onClose }: { onClose: () => void }) => {
+interface ProfileEditModalHookProps {
+  onClose: () => void;
+  open: boolean;
+}
+
+export const useProfileEditModal = ({ onClose, open }: ProfileEditModalHookProps) => {
   const { data: session } = useSession();
   const { errorHandler } = useErrorHandler();
   const { mutateAsync: updateUser } = useUpdateUser();
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -41,6 +48,10 @@ export const useProfileEditModal = ({ onClose }: { onClose: () => void }) => {
       errorHandler(error);
     }
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
 
   return {
     errors,
