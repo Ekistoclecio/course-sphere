@@ -1,8 +1,8 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -55,7 +55,7 @@ export class UsersService {
     );
 
     if (!isCurrentPasswordValid) {
-      throw new UnauthorizedException('Senha atual inválida.');
+      throw new ForbiddenException('Senha atual inválida.');
     }
 
     if (updateUserDto.email) {
