@@ -65,7 +65,13 @@ export const LessonCard = ({
     >
       <S.LessonThumbnail src={getYoutubeThumbnail(lesson.video_url)} alt={lesson.title} />
       <S.LessonInfo>
-        <Typography variant="subtitle1" noWrap color="text.disabled">
+        <Typography
+          variant="subtitle1"
+          noWrap
+          color="text.disabled"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
           {lesson.title}
         </Typography>
         <Box>
@@ -108,7 +114,7 @@ export const LessonCard = ({
         onClose={() => setIsDeleteLessonOpen(false)}
         onConfirm={handleDeleteLesson}
         title="Excluir aula"
-        description={`Tem certeza que deseja excluir a aula ${lesson.title}?`}
+        description={`Tem certeza que deseja excluir a aula "${lesson.title}"?`}
         variant="error"
       />
       <EditLessonModal

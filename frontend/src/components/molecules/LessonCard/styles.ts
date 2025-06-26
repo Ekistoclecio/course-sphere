@@ -34,4 +34,5 @@ export const LessonInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(0.5),
+  overflow: 'hidden',
 }));
